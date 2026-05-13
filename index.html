@@ -1,0 +1,1103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" id="theme-color" content="#0f172a" />
+    <link
+      rel="icon"
+      id="favicon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%230f172a'/%3E%3C/svg%3E"
+    />
+    <title>Raincheck — Zürich Oerlikon</title>
+    <style>
+      :root {
+        --bg-go: #16a34a;
+        --bg-go-2: #065f46;
+        --bg-stay: #dc2626;
+        --bg-stay-2: #7f1d1d;
+        --bg-loading: #0f172a;
+        --text: #ffffff;
+        --muted: rgba(255, 255, 255, 0.78);
+        --card: rgba(255, 255, 255, 0.1);
+        --border: rgba(255, 255, 255, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter,
+          Roboto, "Helvetica Neue", Arial, sans-serif;
+        color: var(--text);
+        background: var(--bg-loading);
+        transition: background 600ms ease;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      body.go {
+        background: radial-gradient(
+          ellipse at top,
+          var(--bg-go) 0%,
+          var(--bg-go-2) 100%
+        );
+      }
+
+      body.stay {
+        background: radial-gradient(
+          ellipse at top,
+          var(--bg-stay) 0%,
+          var(--bg-stay-2) 100%
+        );
+      }
+
+      main {
+        min-height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 20px;
+        gap: 28px;
+      }
+
+      .location {
+        font-size: 14px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .icon {
+        font-size: 88px;
+        line-height: 1;
+        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+        animation: pop 600ms ease both;
+      }
+
+      .verdict {
+        font-size: clamp(48px, 12vw, 112px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        text-align: center;
+        line-height: 1;
+        margin: 0;
+        text-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+      }
+
+      .reason {
+        font-size: 16px;
+        color: var(--muted);
+        text-align: center;
+        max-width: 28ch;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(140px, 1fr));
+        gap: 12px;
+        width: min(420px, 100%);
+        margin-top: 4px;
+      }
+
+      .stat {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 16px 18px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+      }
+
+      .stat .label {
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: var(--muted);
+      }
+
+      .stat .value {
+        font-size: 24px;
+        font-weight: 700;
+        margin-top: 4px;
+      }
+
+      footer {
+        font-size: 12px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 8px;
+      }
+
+      button.refresh {
+        appearance: none;
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 8px 16px;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 150ms ease, transform 150ms ease;
+      }
+
+      button.refresh:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      button.refresh:active {
+        transform: scale(0.97);
+      }
+
+      .error {
+        background: rgba(0, 0, 0, 0.25);
+        padding: 12px 16px;
+        border-radius: 10px;
+        font-size: 14px;
+        max-width: 32ch;
+        text-align: center;
+      }
+
+      @keyframes pop {
+        0% {
+          transform: scale(0.6);
+          opacity: 0;
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .icon {
+          animation: none;
+        }
+        body {
+          transition: none;
+        }
+      }
+
+      /* Month overview */
+      .month {
+        width: min(560px, 100%);
+        background: rgba(0, 0, 0, 0.18);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        margin-top: 8px;
+      }
+
+      .month-title-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+
+      .month-title {
+        flex: 1;
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .month-nav {
+        appearance: none;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 120ms ease, transform 120ms ease;
+        flex-shrink: 0;
+      }
+
+      .month-nav:hover {
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .month-nav:active {
+        transform: scale(0.95);
+      }
+
+      .cell.loading {
+        opacity: 0.35;
+      }
+
+      .month-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 6px;
+      }
+
+      .weekday {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--muted);
+        text-align: center;
+        padding: 4px 0 6px;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+      }
+
+      .cell {
+        aspect-ratio: 1;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1px;
+        font-size: 13px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: rgba(255, 255, 255, 0.5);
+        position: relative;
+      }
+
+      .cell.empty {
+        background: transparent;
+        border: none;
+      }
+
+      .cell.go {
+        background: #16a34a;
+        color: white;
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .cell.stay {
+        background: #dc2626;
+        color: white;
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+
+      .cell.climate {
+        opacity: 0.6;
+        border-style: dashed;
+      }
+
+      .cell.today {
+        outline: 2px solid white;
+        outline-offset: 2px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+      }
+
+      .cell .day-num {
+        font-size: 14px;
+        line-height: 1;
+      }
+
+      .cell .day-meta {
+        font-size: 9px;
+        opacity: 0.85;
+        line-height: 1;
+        letter-spacing: 0.04em;
+      }
+
+      .legend {
+        display: flex;
+        gap: 14px;
+        justify-content: center;
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 14px;
+        flex-wrap: wrap;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .legend .dot {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        vertical-align: middle;
+        margin-right: 4px;
+      }
+
+      .legend .dot.go {
+        background: #16a34a;
+      }
+
+      .legend .dot.stay {
+        background: #dc2626;
+      }
+
+      .legend .dot.climate {
+        background: transparent;
+        border: 1.5px dashed rgba(255, 255, 255, 0.6);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="location" id="location">Zürich Oerlikon</div>
+      <div class="icon" id="icon" aria-hidden="true">⏳</div>
+      <h1 class="verdict" id="verdict">Loading…</h1>
+      <div class="reason" id="reason">Fetching current conditions</div>
+
+      <section class="stats" aria-label="Current conditions">
+        <div class="stat">
+          <div class="label">Temperature</div>
+          <div class="value" id="temp">–</div>
+        </div>
+        <div class="stat">
+          <div class="label">Condition</div>
+          <div class="value" id="condition">–</div>
+        </div>
+      </section>
+
+      <section class="month" aria-label="Month overview">
+        <div class="month-title-bar">
+          <button
+            class="month-nav"
+            id="month-prev"
+            type="button"
+            aria-label="Previous month"
+          >
+            ‹
+          </button>
+          <div class="month-title" id="month-title">This month</div>
+          <button
+            class="month-nav"
+            id="month-next"
+            type="button"
+            aria-label="Next month"
+          >
+            ›
+          </button>
+        </div>
+        <div class="month-grid" id="month-grid"></div>
+        <div class="legend">
+          <span><span class="dot go"></span>Go out</span>
+          <span><span class="dot stay"></span>Stay home</span>
+          <span><span class="dot climate"></span>Climate estimate</span>
+        </div>
+      </section>
+
+      <button class="refresh" id="refresh" type="button">Refresh</button>
+      <footer id="updated">—</footer>
+    </main>
+
+    <script>
+      // ─────────────────────────────────────────────────────────────────────
+      // CONFIG
+      // ─────────────────────────────────────────────────────────────────────
+      // Default: Open-Meteo (free, no API key required).
+      // If you'd rather use OpenWeatherMap, set USE_OPENWEATHER = true
+      // and paste your key into OPENWEATHER_API_KEY below.
+      const USE_OPENWEATHER = false;
+      const OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY_HERE";
+
+      // Zürich Oerlikon coordinates
+      const LAT = 47.4115;
+      const LON = 8.5439;
+
+      const TEMP_THRESHOLD_C = 15;
+      const RAIN_MM_PER_HOUR_THRESHOLD = 0.5; // > this in any hour 9–18 counts as "actual rain"
+      const DAYTIME_START_HOUR = 8; // inclusive
+      const DAYTIME_END_HOUR = 19; // exclusive — so hours 8..18 are checked
+      const REFRESH_MS = 10 * 60 * 1000; // 10 minutes
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Weather code → label + emoji
+      // (Open-Meteo WMO codes: https://open-meteo.com/en/docs)
+      // ─────────────────────────────────────────────────────────────────────
+      const WMO = {
+        0: ["Clear", "☀️"],
+        1: ["Mostly clear", "🌤️"],
+        2: ["Partly cloudy", "⛅"],
+        3: ["Cloudy", "☁️"],
+        45: ["Fog", "🌫️"],
+        48: ["Freezing fog", "🌫️"],
+        51: ["Light drizzle", "🌦️"],
+        53: ["Drizzle", "🌦️"],
+        55: ["Heavy drizzle", "🌧️"],
+        56: ["Freezing drizzle", "🌧️"],
+        57: ["Freezing drizzle", "🌧️"],
+        61: ["Light rain", "🌦️"],
+        63: ["Rain", "🌧️"],
+        65: ["Heavy rain", "🌧️"],
+        66: ["Freezing rain", "🌧️"],
+        67: ["Freezing rain", "🌧️"],
+        71: ["Light snow", "🌨️"],
+        73: ["Snow", "🌨️"],
+        75: ["Heavy snow", "❄️"],
+        77: ["Snow grains", "🌨️"],
+        80: ["Rain showers", "🌦️"],
+        81: ["Rain showers", "🌧️"],
+        82: ["Heavy showers", "⛈️"],
+        85: ["Snow showers", "🌨️"],
+        86: ["Heavy snow showers", "❄️"],
+        95: ["Thunderstorm", "⛈️"],
+        96: ["Thunderstorm w/ hail", "⛈️"],
+        99: ["Thunderstorm w/ hail", "⛈️"],
+      };
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Verdict helpers — shared by top card AND month grid
+      // ─────────────────────────────────────────────────────────────────────
+      function parseHourlyTime(s) {
+        // Open-Meteo with timezone=Europe/Zurich returns strings like
+        // "2026-05-12T09:00" already in local time. Parse the parts directly
+        // so browser timezone doesn't shift them.
+        const [date, time] = s.split("T");
+        const [y, m, d] = date.split("-").map(Number);
+        const [h] = time.split(":").map(Number);
+        return { year: y, month0: m - 1, day: d, hour: h };
+      }
+
+      function maxDaytimeRainForDay(hourly, year, month0, day) {
+        if (!hourly || !hourly.time || !hourly.rain) return 0;
+        let max = 0;
+        for (let i = 0; i < hourly.time.length; i++) {
+          const t = parseHourlyTime(hourly.time[i]);
+          if (t.year !== year || t.month0 !== month0 || t.day !== day) continue;
+          if (t.hour < DAYTIME_START_HOUR || t.hour >= DAYTIME_END_HOUR)
+            continue;
+          const r = hourly.rain[i] ?? 0;
+          if (r > max) max = r;
+        }
+        return max;
+      }
+
+      function dayVerdict(tmax, maxDaytimeRainMm) {
+        if (tmax == null) return null;
+        const warm = tmax >= TEMP_THRESHOLD_C;
+        const dry = (maxDaytimeRainMm ?? 0) < RAIN_MM_PER_HOUR_THRESHOLD;
+        return warm && dry;
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Fetchers
+      // ─────────────────────────────────────────────────────────────────────
+      async function fetchOpenMeteo() {
+        const url =
+          `https://api.open-meteo.com/v1/forecast` +
+          `?latitude=${LAT}&longitude=${LON}` +
+          `&current=temperature_2m,weather_code` +
+          `&hourly=rain` +
+          `&daily=temperature_2m_max` +
+          `&timezone=Europe/Zurich` +
+          `&forecast_days=1`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Open-Meteo HTTP ${res.status}`);
+        const data = await res.json();
+        const c = data.current;
+        const code = c.weather_code;
+        const [label, emoji] = WMO[code] ?? ["Unknown", "🌡️"];
+
+        const today = new Date();
+        const tmaxToday = data.daily?.temperature_2m_max?.[0] ?? null;
+        const maxRainToday = maxDaytimeRainForDay(
+          data.hourly,
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+        );
+
+        return {
+          tempC: c.temperature_2m,
+          label,
+          emoji,
+          tmaxToday,
+          maxRainToday,
+          goOut: dayVerdict(tmaxToday, maxRainToday),
+        };
+      }
+
+      async function fetchOpenWeather() {
+        // NOTE: OpenWeatherMap free tier doesn't easily expose hourly rain
+        // for a full day. This path uses a simpler "is it raining now"
+        // approximation — it does NOT implement the 9–18 rain-window rule.
+        if (
+          !OPENWEATHER_API_KEY ||
+          OPENWEATHER_API_KEY === "YOUR_OPENWEATHER_API_KEY_HERE"
+        ) {
+          throw new Error("Missing OpenWeatherMap API key");
+        }
+        const url =
+          `https://api.openweathermap.org/data/2.5/weather` +
+          `?lat=${LAT}&lon=${LON}&units=metric&appid=${OPENWEATHER_API_KEY}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`OpenWeatherMap HTTP ${res.status}`);
+        const data = await res.json();
+        const main = data.weather?.[0]?.main ?? "Unknown";
+        const desc = data.weather?.[0]?.description ?? main;
+        const id = data.weather?.[0]?.id ?? 0;
+        // OWM "id" ranges: 5xx = rain, 6xx = snow, 2xx = thunderstorm
+        const raining = (id >= 500 && id < 600) || (id >= 200 && id < 300);
+        const rainMm =
+          (data.rain && (data.rain["1h"] ?? data.rain["3h"] ?? 0)) || 0;
+        const tempC = data.main.temp;
+        return {
+          tempC,
+          label: capitalize(desc),
+          emoji: pickEmojiFromOWM(main),
+          tmaxToday: tempC,
+          maxRainToday: raining ? Math.max(rainMm, 0.6) : rainMm,
+          goOut: dayVerdict(
+            tempC,
+            raining ? Math.max(rainMm, 0.6) : rainMm,
+          ),
+        };
+      }
+
+      function pickEmojiFromOWM(main) {
+        switch (main) {
+          case "Clear":
+            return "☀️";
+          case "Clouds":
+            return "☁️";
+          case "Rain":
+          case "Drizzle":
+            return "🌧️";
+          case "Snow":
+            return "❄️";
+          case "Thunderstorm":
+            return "⛈️";
+          case "Mist":
+          case "Fog":
+          case "Haze":
+            return "🌫️";
+          default:
+            return "🌡️";
+        }
+      }
+
+      function capitalize(s) {
+        return s ? s[0].toUpperCase() + s.slice(1) : s;
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Render
+      // ─────────────────────────────────────────────────────────────────────
+      const els = {
+        verdict: document.getElementById("verdict"),
+        reason: document.getElementById("reason"),
+        icon: document.getElementById("icon"),
+        temp: document.getElementById("temp"),
+        condition: document.getElementById("condition"),
+        updated: document.getElementById("updated"),
+        themeColor: document.getElementById("theme-color"),
+        favicon: document.getElementById("favicon"),
+        refresh: document.getElementById("refresh"),
+      };
+
+      function faviconFor(hexColor) {
+        const fill = hexColor.replace("#", "%23");
+        return (
+          "data:image/svg+xml," +
+          "%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E" +
+          `%3Ccircle cx='32' cy='32' r='28' fill='${fill}'/%3E` +
+          "%3C/svg%3E"
+        );
+      }
+
+      function render(weather) {
+        const { tempC, label, emoji, tmaxToday, maxRainToday, goOut } =
+          weather;
+
+        document.body.classList.toggle("go", goOut);
+        document.body.classList.toggle("stay", !goOut);
+        const verdictColor = goOut ? "#16a34a" : "#dc2626";
+        els.themeColor.setAttribute("content", verdictColor);
+        els.favicon.setAttribute("href", faviconFor(verdictColor));
+
+        els.verdict.textContent = goOut ? "🟢 GO OUT" : "🔴 STAY HOME";
+        els.icon.textContent = emoji;
+        els.temp.textContent = `${Math.round(tempC)}°C`;
+        els.condition.textContent = label;
+
+        const reasons = [];
+        if (tmaxToday != null && tmaxToday < TEMP_THRESHOLD_C) {
+          reasons.push(`max only ${Math.round(tmaxToday)}°C today`);
+        }
+        if ((maxRainToday ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD) {
+          reasons.push("rain expected between 8 and 19");
+        }
+        els.reason.textContent = goOut
+          ? tmaxToday != null
+            ? `Today: up to ${Math.round(
+                tmaxToday,
+              )}°C, no real rain between 8 and 19.`
+            : "Warm and dry — enjoy it."
+          : `Better stay in — ${reasons.join(" and ")}.`;
+
+        const now = new Date();
+        els.updated.textContent = `Updated ${now.toLocaleTimeString("de-CH", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })} · source: ${USE_OPENWEATHER ? "OpenWeatherMap" : "Open-Meteo"}`;
+      }
+
+      function renderError(err) {
+        document.body.classList.remove("go", "stay");
+        els.verdict.textContent = "Hmm.";
+        els.reason.innerHTML = `<div class="error">Couldn't load weather: ${
+          err.message || err
+        }</div>`;
+        els.icon.textContent = "⚠️";
+        els.temp.textContent = "–";
+        els.condition.textContent = "–";
+      }
+
+      async function update() {
+        try {
+          const data = USE_OPENWEATHER
+            ? await fetchOpenWeather()
+            : await fetchOpenMeteo();
+          render(data);
+        } catch (err) {
+          console.error(err);
+          renderError(err);
+        }
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Month overview
+      // ─────────────────────────────────────────────────────────────────────
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+
+      function daysInMonth(year, month0) {
+        return new Date(year, month0 + 1, 0).getDate();
+      }
+
+      // ISO weekday with Monday=0..Sunday=6
+      function isoWeekday(date) {
+        return (date.getDay() + 6) % 7;
+      }
+
+      async function fetchForecastRange(pastDays, forecastDays) {
+        const url =
+          `https://api.open-meteo.com/v1/forecast` +
+          `?latitude=${LAT}&longitude=${LON}` +
+          `&daily=temperature_2m_max` +
+          `&hourly=rain` +
+          `&timezone=Europe/Zurich` +
+          `&past_days=${pastDays}` +
+          `&forecast_days=${forecastDays}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Forecast range HTTP ${res.status}`);
+        return res.json();
+      }
+
+      async function fetchArchiveYear(year, month0, fromDay, toDay) {
+        const start = `${year}-${pad2(month0 + 1)}-${pad2(fromDay)}`;
+        const end = `${year}-${pad2(month0 + 1)}-${pad2(toDay)}`;
+        const url =
+          `https://archive-api.open-meteo.com/v1/archive` +
+          `?latitude=${LAT}&longitude=${LON}` +
+          `&start_date=${start}&end_date=${end}` +
+          `&daily=temperature_2m_max` +
+          `&hourly=rain` +
+          `&timezone=Europe/Zurich`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Archive HTTP ${res.status}`);
+        return res.json();
+      }
+
+      async function populateClimate(days, year, month0, fromDay, toDay) {
+        const yearsBack = 5;
+        const years = [];
+        for (let y = year - yearsBack; y < year; y++) years.push(y);
+
+        try {
+          const archives = await Promise.all(
+            years.map((y) => fetchArchiveYear(y, month0, fromDay, toDay)),
+          );
+
+          for (let d = fromDay; d <= toDay; d++) {
+            let go = 0;
+            let total = 0;
+            for (const arch of archives) {
+              const t = arch.daily.time;
+              let tmax = null;
+              let archYear = null;
+              for (let i = 0; i < t.length; i++) {
+                const [yy, mm, dd] = t[i].split("-").map(Number);
+                if (dd !== d) continue;
+                tmax = arch.daily.temperature_2m_max[i];
+                archYear = yy;
+                break;
+              }
+              if (tmax == null || archYear == null) continue;
+              const maxRain = maxDaytimeRainForDay(
+                arch.hourly,
+                archYear,
+                month0,
+                d,
+              );
+              const v = dayVerdict(tmax, maxRain);
+              if (v == null) continue;
+              total++;
+              if (v) go++;
+            }
+            const probability = total > 0 ? go / total : null;
+            days[d] = {
+              day: d,
+              probability,
+              goOut: probability != null ? probability >= 0.5 : null,
+              source: "climate",
+              yearsTotal: total,
+            };
+          }
+        } catch (err) {
+          console.warn("Climatology failed:", err);
+          for (let d = fromDay; d <= toDay; d++) {
+            if (!days[d])
+              days[d] = { day: d, source: "climate", goOut: null };
+          }
+        }
+      }
+
+      async function buildMonthData(targetYear, targetMonth0) {
+        const today = new Date();
+        const todayY = today.getFullYear();
+        const todayM0 = today.getMonth();
+        const todayD = today.getDate();
+        const totalDays = daysInMonth(targetYear, targetMonth0);
+        const days = {};
+
+        const targetKey = targetYear * 12 + targetMonth0;
+        const todayKey = todayY * 12 + todayM0;
+        const isCurrentMonth = targetKey === todayKey;
+        const isPastMonth = targetKey < todayKey;
+
+        if (isCurrentMonth) {
+          // Real + forecast in one call; climate for tail
+          const pastDays = Math.max(0, todayD - 1);
+          const forecastDays = 16;
+          const fc = await fetchForecastRange(pastDays, forecastDays);
+          for (let i = 0; i < fc.daily.time.length; i++) {
+            const [yy, mm, dd] = fc.daily.time[i].split("-").map(Number);
+            if (yy !== targetYear || mm - 1 !== targetMonth0) continue;
+            const tmax = fc.daily.temperature_2m_max[i];
+            const maxRain = maxDaytimeRainForDay(
+              fc.hourly,
+              targetYear,
+              targetMonth0,
+              dd,
+            );
+            days[dd] = {
+              day: dd,
+              tmax,
+              maxRain,
+              goOut: dayVerdict(tmax, maxRain),
+              source: dd < todayD ? "history" : "forecast",
+            };
+          }
+          const lastCoveredDay = todayD + forecastDays - 1;
+          if (lastCoveredDay + 1 <= totalDays) {
+            await populateClimate(
+              days,
+              targetYear,
+              targetMonth0,
+              lastCoveredDay + 1,
+              totalDays,
+            );
+          }
+        } else if (isPastMonth) {
+          // Entire month from archive
+          try {
+            const arch = await fetchArchiveYear(
+              targetYear,
+              targetMonth0,
+              1,
+              totalDays,
+            );
+            for (let i = 0; i < arch.daily.time.length; i++) {
+              const [yy, mm, dd] = arch.daily.time[i].split("-").map(Number);
+              if (yy !== targetYear || mm - 1 !== targetMonth0) continue;
+              const tmax = arch.daily.temperature_2m_max[i];
+              const maxRain = maxDaytimeRainForDay(
+                arch.hourly,
+                targetYear,
+                targetMonth0,
+                dd,
+              );
+              days[dd] = {
+                day: dd,
+                tmax,
+                maxRain,
+                goOut: dayVerdict(tmax, maxRain),
+                source: "history",
+              };
+            }
+          } catch (err) {
+            console.warn("Archive failed:", err);
+          }
+        } else {
+          // Future month: forecast for days within today..today+15, climate for rest
+          const todayMidnight = new Date(todayY, todayM0, todayD);
+          let fcFirst = null;
+          let fcLast = null;
+          let climFirst = null;
+          let climLast = null;
+          for (let d = 1; d <= totalDays; d++) {
+            const dt = new Date(targetYear, targetMonth0, d);
+            const diff = Math.round(
+              (dt - todayMidnight) / 86400000,
+            );
+            if (diff >= 0 && diff <= 15) {
+              if (fcFirst === null) fcFirst = d;
+              fcLast = d;
+            } else {
+              if (climFirst === null) climFirst = d;
+              climLast = d;
+            }
+          }
+
+          if (fcFirst !== null) {
+            const fc = await fetchForecastRange(0, 16);
+            for (let i = 0; i < fc.daily.time.length; i++) {
+              const [yy, mm, dd] = fc.daily.time[i].split("-").map(Number);
+              if (yy !== targetYear || mm - 1 !== targetMonth0) continue;
+              const tmax = fc.daily.temperature_2m_max[i];
+              const maxRain = maxDaytimeRainForDay(
+                fc.hourly,
+                targetYear,
+                targetMonth0,
+                dd,
+              );
+              days[dd] = {
+                day: dd,
+                tmax,
+                maxRain,
+                goOut: dayVerdict(tmax, maxRain),
+                source: "forecast",
+              };
+            }
+          }
+          if (climFirst !== null) {
+            await populateClimate(
+              days,
+              targetYear,
+              targetMonth0,
+              climFirst,
+              climLast,
+            );
+          }
+        }
+
+        const todayDay = isCurrentMonth ? todayD : null;
+        return {
+          year: targetYear,
+          month0: targetMonth0,
+          totalDays,
+          todayDay,
+          days,
+        };
+      }
+
+      const MONTH_NAMES = [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+      ];
+      const WEEKDAY_SHORT = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
+      function renderMonth(monthData) {
+        const { year, month0, totalDays, todayDay, days } = monthData;
+        const titleEl = document.getElementById("month-title");
+        const grid = document.getElementById("month-grid");
+        titleEl.textContent = `${MONTH_NAMES[month0]} ${year}`;
+
+        grid.innerHTML = "";
+
+        for (const w of WEEKDAY_SHORT) {
+          const h = document.createElement("div");
+          h.className = "weekday";
+          h.textContent = w;
+          grid.appendChild(h);
+        }
+
+        const firstWd = isoWeekday(new Date(year, month0, 1));
+        for (let i = 0; i < firstWd; i++) {
+          const c = document.createElement("div");
+          c.className = "cell empty";
+          grid.appendChild(c);
+        }
+
+        for (let d = 1; d <= totalDays; d++) {
+          const data = days[d];
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          if (data?.goOut === true) cell.classList.add("go");
+          else if (data?.goOut === false) cell.classList.add("stay");
+          if (data?.source === "climate") cell.classList.add("climate");
+          if (d === todayDay) cell.classList.add("today");
+
+          const num = document.createElement("div");
+          num.className = "day-num";
+          num.textContent = String(d);
+          cell.appendChild(num);
+
+          if (data?.source === "climate" && data.probability != null) {
+            const meta = document.createElement("div");
+            meta.className = "day-meta";
+            meta.textContent = `${Math.round(data.probability * 100)}%`;
+            cell.appendChild(meta);
+          } else if (data?.tmax != null) {
+            const meta = document.createElement("div");
+            meta.className = "day-meta";
+            meta.textContent = `${Math.round(data.tmax)}°`;
+            cell.appendChild(meta);
+          }
+
+          if (data) {
+            if (data.source === "climate") {
+              cell.title =
+                data.probability != null
+                  ? `${d}. ${MONTH_NAMES[month0]}: ~${Math.round(
+                      data.probability * 100,
+                    )}% Go-Out probability (climate estimate from ${
+                      data.yearsTotal
+                    } past years)`
+                  : `${d}. ${MONTH_NAMES[month0]}: climate data unavailable`;
+            } else {
+              cell.title = `${d}. ${MONTH_NAMES[month0]}: ${Math.round(
+                data.tmax,
+              )}°C max, peak ${(data.maxRain ?? 0).toFixed(
+                1,
+              )} mm/h rain in 8–19 window (${
+                data.source === "history" ? "measured" : "forecast"
+              })`;
+            }
+          }
+
+          grid.appendChild(cell);
+        }
+      }
+
+      // Viewed-month state — starts at the current month
+      const _now = new Date();
+      let viewedYear = _now.getFullYear();
+      let viewedMonth0 = _now.getMonth();
+
+      function renderMonthPlaceholder(year, month0) {
+        const titleEl = document.getElementById("month-title");
+        const grid = document.getElementById("month-grid");
+        titleEl.textContent = `${MONTH_NAMES[month0]} ${year}`;
+        grid.innerHTML = "";
+        for (const w of WEEKDAY_SHORT) {
+          const h = document.createElement("div");
+          h.className = "weekday";
+          h.textContent = w;
+          grid.appendChild(h);
+        }
+        const firstWd = isoWeekday(new Date(year, month0, 1));
+        for (let i = 0; i < firstWd; i++) {
+          const c = document.createElement("div");
+          c.className = "cell empty";
+          grid.appendChild(c);
+        }
+        const total = daysInMonth(year, month0);
+        for (let d = 1; d <= total; d++) {
+          const cell = document.createElement("div");
+          cell.className = "cell loading";
+          const num = document.createElement("div");
+          num.className = "day-num";
+          num.textContent = String(d);
+          cell.appendChild(num);
+          grid.appendChild(cell);
+        }
+      }
+
+      // Token to avoid stale fetches overwriting a newer navigation
+      let monthFetchToken = 0;
+
+      async function updateMonth(showPlaceholder = false) {
+        const token = ++monthFetchToken;
+        if (showPlaceholder) renderMonthPlaceholder(viewedYear, viewedMonth0);
+        try {
+          const data = await buildMonthData(viewedYear, viewedMonth0);
+          if (token !== monthFetchToken) return; // a newer fetch has started
+          renderMonth(data);
+        } catch (err) {
+          if (token !== monthFetchToken) return;
+          console.error("Month overview failed:", err);
+          const grid = document.getElementById("month-grid");
+          grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; color: var(--muted); font-size: 13px; padding: 12px;">Couldn't load month overview: ${err.message}</div>`;
+        }
+      }
+
+      function shiftMonth(delta) {
+        let m = viewedMonth0 + delta;
+        let y = viewedYear;
+        while (m < 0) {
+          m += 12;
+          y -= 1;
+        }
+        while (m > 11) {
+          m -= 12;
+          y += 1;
+        }
+        viewedYear = y;
+        viewedMonth0 = m;
+        updateMonth(true);
+      }
+
+      document
+        .getElementById("month-prev")
+        .addEventListener("click", () => shiftMonth(-1));
+      document
+        .getElementById("month-next")
+        .addEventListener("click", () => shiftMonth(1));
+
+      els.refresh.addEventListener("click", () => {
+        update();
+        updateMonth();
+      });
+      update();
+      updateMonth();
+      setInterval(() => {
+        update();
+        // Only auto-refresh the month grid when viewing the current month —
+        // historical/climate data for other months doesn't change.
+        const now = new Date();
+        if (
+          viewedYear === now.getFullYear() &&
+          viewedMonth0 === now.getMonth()
+        ) {
+          updateMonth();
+        }
+      }, REFRESH_MS);
+    </script>
+  </body>
+</html>
