@@ -113,10 +113,16 @@
       }
 
       .icon {
-        font-size: clamp(28px, 5.5vh, 88px);
-        line-height: 1;
-        filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+        width: clamp(48px, 9vh, 100px);
+        height: clamp(48px, 9vh, 100px);
+        filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.15));
         animation: pop 600ms ease both;
+      }
+
+      .icon img {
+        width: 100%;
+        height: 100%;
+        display: block;
       }
 
       .verdict {
@@ -451,7 +457,7 @@
         id="location"
         aria-label="Choose location"
       ></select>
-      <div class="icon" id="icon" aria-hidden="true">⏳</div>
+      <div class="icon" id="icon" aria-hidden="true"></div>
       <h1 class="verdict" id="verdict">Loading…</h1>
       <div class="reason" id="reason">Fetching current conditions</div>
 
@@ -560,35 +566,37 @@
       // Weather code → label + emoji
       // (Open-Meteo WMO codes: https://open-meteo.com/en/docs)
       // ─────────────────────────────────────────────────────────────────────
+      const ICON_BASE = "https://cdn.jsdelivr.net/npm/@bybas/weather-icons@2.0.0/production/fill/all/";
+
       const WMO = {
-        0: ["Clear", "☀️"],
-        1: ["Mostly clear", "🌤️"],
-        2: ["Partly cloudy", "⛅"],
-        3: ["Cloudy", "☁️"],
-        45: ["Fog", "🌫️"],
-        48: ["Freezing fog", "🌫️"],
-        51: ["Light drizzle", "🌦️"],
-        53: ["Drizzle", "🌦️"],
-        55: ["Heavy drizzle", "🌧️"],
-        56: ["Freezing drizzle", "🌧️"],
-        57: ["Freezing drizzle", "🌧️"],
-        61: ["Light rain", "🌦️"],
-        63: ["Rain", "🌧️"],
-        65: ["Heavy rain", "🌧️"],
-        66: ["Freezing rain", "🌧️"],
-        67: ["Freezing rain", "🌧️"],
-        71: ["Light snow", "🌨️"],
-        73: ["Snow", "🌨️"],
-        75: ["Heavy snow", "❄️"],
-        77: ["Snow grains", "🌨️"],
-        80: ["Rain showers", "🌦️"],
-        81: ["Rain showers", "🌧️"],
-        82: ["Heavy showers", "⛈️"],
-        85: ["Snow showers", "🌨️"],
-        86: ["Heavy snow showers", "❄️"],
-        95: ["Thunderstorm", "⛈️"],
-        96: ["Thunderstorm w/ hail", "⛈️"],
-        99: ["Thunderstorm w/ hail", "⛈️"],
+        0:  ["Clear",                "clear-day"],
+        1:  ["Mostly clear",         "partly-cloudy-day"],
+        2:  ["Partly cloudy",        "partly-cloudy-day"],
+        3:  ["Cloudy",               "overcast"],
+        45: ["Fog",                  "fog"],
+        48: ["Freezing fog",         "fog"],
+        51: ["Light drizzle",        "drizzle"],
+        53: ["Drizzle",              "drizzle"],
+        55: ["Heavy drizzle",        "drizzle"],
+        56: ["Freezing drizzle",     "sleet"],
+        57: ["Freezing drizzle",     "sleet"],
+        61: ["Light rain",           "rain"],
+        63: ["Rain",                 "rain"],
+        65: ["Heavy rain",           "rain"],
+        66: ["Freezing rain",        "sleet"],
+        67: ["Freezing rain",        "sleet"],
+        71: ["Light snow",           "snow"],
+        73: ["Snow",                 "snow"],
+        75: ["Heavy snow",           "snow"],
+        77: ["Snow grains",          "snow"],
+        80: ["Rain showers",         "rain"],
+        81: ["Rain showers",         "rain"],
+        82: ["Heavy showers",        "thunderstorms-rain"],
+        85: ["Snow showers",         "snow"],
+        86: ["Heavy snow showers",   "snow"],
+        95: ["Thunderstorm",         "thunderstorms"],
+        96: ["Thunderstorm w/ hail", "thunderstorms-rain"],
+        99: ["Thunderstorm w/ hail", "thunderstorms-rain"],
       };
 
       // ─────────────────────────────────────────────────────────────────────
@@ -704,23 +712,16 @@
 
       function pickEmojiFromOWM(main) {
         switch (main) {
-          case "Clear":
-            return "☀️";
-          case "Clouds":
-            return "☁️";
-          case "Rain":
-          case "Drizzle":
-            return "🌧️";
-          case "Snow":
-            return "❄️";
-          case "Thunderstorm":
-            return "⛈️";
+          case "Clear":       return "clear-day";
+          case "Clouds":      return "overcast";
+          case "Rain":        return "rain";
+          case "Drizzle":     return "drizzle";
+          case "Snow":        return "snow";
+          case "Thunderstorm":return "thunderstorms";
           case "Mist":
           case "Fog":
-          case "Haze":
-            return "🌫️";
-          default:
-            return "🌡️";
+          case "Haze":        return "fog";
+          default:            return "partly-cloudy-day";
         }
       }
 
@@ -767,7 +768,8 @@
         els.verdict.innerHTML = goOut
           ? '<span class="verdict-dot go"></span> GO OUT'
           : '<span class="verdict-dot stay"></span> STAY HOME';
-        els.icon.textContent = emoji;
+        els.icon.innerHTML = `<img src="${ICON_BASE}${emoji}.svg" alt="${label}">`;
+
         els.temp.textContent = `${Math.round(tempC)}°C`;
         els.condition.textContent = label;
         const rainMm = maxRainToday ?? 0;
@@ -806,7 +808,7 @@
         els.reason.innerHTML = `<div class="error">Couldn't load weather: ${
           err.message || err
         }</div>`;
-        els.icon.textContent = "⚠️";
+        els.icon.innerHTML = `<img src="${ICON_BASE}not-available.svg" alt="Error">`;
         els.temp.textContent = "–";
         els.condition.textContent = "–";
         els.rain.textContent = "–";
