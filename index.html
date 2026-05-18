@@ -258,19 +258,33 @@
         }
       }
 
-      /* Month overview — carousel */
+      /* Month overview — peek carousel */
       .month-carousel {
+        /* Card dimensions — used by both CSS positioning and JS */
+        --card-w: clamp(260px, 80vw, 480px);
+        --card-gap: 16px;
+        /* Break out of main's horizontal padding → full viewport width */
+        align-self: stretch;
+        margin-left: calc(-1 * clamp(12px, 3vw, 20px));
+        margin-right: calc(-1 * clamp(12px, 3vw, 20px));
         flex: 1 1 0;
         min-height: 0;
-        width: min(560px, 100%);
         position: relative;
         overflow: hidden;
-        border-radius: 18px;
       }
 
       .month-slide {
         position: absolute;
-        inset: 0;
+        top: 0;
+        bottom: 0;
+        width: var(--card-w);
+        /* Center slide, then shift by --col * (card-w + gap) */
+        left: calc(50% - var(--card-w) / 2);
+        transform: translateX(
+          calc(var(--col, 0) * (var(--card-w) + var(--card-gap)))
+        );
+        transition: transform 360ms cubic-bezier(0.4, 0, 0.2, 1);
+        will-change: transform;
         background: rgba(255, 255, 255, 0.32);
         border: 1px solid var(--border);
         border-radius: 18px;
@@ -279,7 +293,10 @@
         -webkit-backdrop-filter: blur(10px);
         display: flex;
         flex-direction: column;
-        will-change: transform;
+      }
+
+      .month-slide.no-transition {
+        transition: none !important;
       }
 
       .month-title-bar {
@@ -1263,10 +1280,13 @@
       const slotTokens = [0, 0, 0];
 
       function setSlidePos(i, col, animated) {
-        slides[i].style.transition = animated
-          ? `transform ${ANIM_MS}ms cubic-bezier(0.4,0,0.2,1)`
-          : "none";
-        slides[i].style.transform = `translateX(${col * 100}%)`;
+        if (!animated) {
+          slides[i].classList.add("no-transition");
+          slides[i].getBoundingClientRect(); // force reflow so transition is suppressed
+        } else {
+          slides[i].classList.remove("no-transition");
+        }
+        slides[i].style.setProperty("--col", col);
       }
 
       function offsetMonthBy(year, month0, delta) {
