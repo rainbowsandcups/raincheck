@@ -921,7 +921,7 @@
               tmax: avgTmax,
               probability,
               rainProbability,
-              goOut: probability != null ? probability >= 0.5 : null,
+              goOut: avgTmax != null ? dayVerdict(avgTmax, (rainProbability ?? 0) >= 0.5 ? RAIN_MM_PER_HOUR_THRESHOLD : 0) : null,
               source: "climate",
               yearsTotal: total,
             };
