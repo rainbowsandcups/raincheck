@@ -384,6 +384,16 @@
         border-style: dashed;
       }
 
+      .cell.rainy {
+        background-image: repeating-linear-gradient(
+          45deg,
+          rgba(96, 165, 250, 0.38) 0px,
+          rgba(96, 165, 250, 0.38) 2px,
+          transparent 2px,
+          transparent 9px
+        );
+      }
+
       .cell.today {
         outline: 2px solid #0f172a;
         outline-offset: 2px;
@@ -435,6 +445,17 @@
       .legend .dot.climate {
         background: transparent;
         border: 1.5px dashed rgba(15, 23, 42, 0.55);
+      }
+
+      .legend .dot.rainy {
+        background: repeating-linear-gradient(
+          45deg,
+          #60a5fa 0px,
+          #60a5fa 2px,
+          transparent 2px,
+          transparent 6px
+        );
+        border: 1px solid rgba(96, 165, 250, 0.5);
       }
     </style>
   </head>
@@ -497,6 +518,7 @@
         <div class="legend">
           <span><span class="dot go"></span>Go out</span>
           <span><span class="dot stay"></span>Stay home</span>
+          <span><span class="dot rainy"></span>Rain</span>
           <span><span class="dot climate"></span>Climate estimate</span>
         </div>
       </section>
@@ -1113,6 +1135,7 @@
           if (data?.goOut === true) cell.classList.add("go");
           else if (data?.goOut === false) cell.classList.add("stay");
           if (data?.source === "climate") cell.classList.add("climate");
+          if (data?.source !== "climate" && (data?.maxRain ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD) cell.classList.add("rainy");
           if (d === todayDay) cell.classList.add("today");
 
           const num = document.createElement("div");
