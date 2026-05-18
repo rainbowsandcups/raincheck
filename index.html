@@ -937,6 +937,7 @@
             let total = 0;
             let tmaxSum = 0;
             let tmaxCount = 0;
+            let rainCount = 0;
             for (const arch of archives) {
               const t = arch.daily.time;
               let tmax = null;
@@ -957,6 +958,7 @@
                 month0,
                 d,
               );
+              if (maxRain >= RAIN_MM_PER_HOUR_THRESHOLD) rainCount++;
               const v = dayVerdict(tmax, maxRain);
               if (v == null) continue;
               total++;
@@ -964,10 +966,12 @@
             }
             const probability = total > 0 ? go / total : null;
             const avgTmax = tmaxCount > 0 ? tmaxSum / tmaxCount : null;
+            const rainProbability = tmaxCount > 0 ? rainCount / tmaxCount : null;
             days[d] = {
               day: d,
               tmax: avgTmax,
               probability,
+              rainProbability,
               goOut: probability != null ? probability >= 0.5 : null,
               source: "climate",
               yearsTotal: total,
@@ -1167,6 +1171,7 @@
           else if (data?.goOut === false) cell.classList.add("stay");
           if (data?.source === "climate") cell.classList.add("climate");
           if (data?.source !== "climate" && (data?.maxRain ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD) cell.classList.add("rainy");
+          if (data?.source === "climate" && (data?.rainProbability ?? 0) >= 0.5) cell.classList.add("rainy");
           if (d === todayDay) cell.classList.add("today");
 
           const num = document.createElement("div");
