@@ -121,8 +121,8 @@
       }
 
       .icon {
-        width: clamp(72px, 14vh, 160px);
-        height: clamp(72px, 14vh, 160px);
+        width: clamp(64px, 11vh, 140px);
+        height: clamp(64px, 11vh, 140px);
         filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.15));
         animation: pop 600ms ease both;
       }
@@ -173,7 +173,7 @@
 
       .stats {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        grid-template-columns: repeat(3, 1fr);
         gap: clamp(6px, 1vh, 12px);
         width: min(560px, 100%);
         margin-top: 0;
@@ -260,15 +260,12 @@
 
       /* Month overview — peek carousel */
       .month-carousel {
-        /* Card dimensions — used by both CSS positioning and JS */
-        --card-w: clamp(260px, 80vw, 480px);
+        --card-w: clamp(240px, 80vw, 480px);
         --card-gap: 16px;
-        /* Break out of main's horizontal padding → full viewport width */
-        align-self: stretch;
-        margin-left: calc(-1 * clamp(12px, 3vw, 20px));
-        margin-right: calc(-1 * clamp(12px, 3vw, 20px));
         flex: 1 1 0;
         min-height: 0;
+        /* 100vw makes it span the full viewport without messing with flex height */
+        width: 100vw;
         position: relative;
         overflow: hidden;
       }
