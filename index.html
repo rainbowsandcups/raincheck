@@ -258,7 +258,7 @@
         background: rgba(255, 255, 255, 0.32);
         border: 1px solid var(--border);
         border-radius: 18px;
-        padding: clamp(10px, 1.5vh, 20px);
+        padding: clamp(10px, 1.5vh, 20px) clamp(3px, 0.5vh, 6px);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         margin-top: 0;
@@ -267,21 +267,22 @@
       }
 
       .month-title-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 10px;
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: clamp(3px, 0.5vh, 6px);
         margin-bottom: clamp(6px, 1vh, 14px);
         flex-shrink: 0;
       }
 
       .month-title {
-        flex: 1;
+        grid-column: 2 / 7;
         font-size: 12px;
         letter-spacing: 0.18em;
         text-transform: uppercase;
         color: var(--muted);
-        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
 
       .month-nav {
@@ -289,8 +290,8 @@
         background: var(--card);
         border: 1px solid var(--border);
         color: var(--text);
-        width: 30px;
-        height: 30px;
+        width: 100%;
+        aspect-ratio: 1;
         border-radius: 8px;
         cursor: pointer;
         font-size: 16px;
@@ -299,7 +300,6 @@
         align-items: center;
         justify-content: center;
         transition: background 120ms ease, transform 120ms ease;
-        flex-shrink: 0;
       }
 
       .month-nav:hover {
