@@ -1175,8 +1175,7 @@
             const meta = document.createElement("div");
             meta.className = "day-meta";
             const wet =
-              (data.maxRain ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD ? " 💧" : "";
-            meta.textContent = `${Math.round(data.tmax)}°${wet}`;
+            meta.textContent = `${Math.round(data.tmax)}°`;
             cell.appendChild(meta);
           }
 
