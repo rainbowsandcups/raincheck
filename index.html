@@ -250,33 +250,39 @@
         }
       }
 
-      /* Month overview */
-      .month {
+      /* Month overview — carousel */
+      .month-carousel {
         flex: 1 1 0;
         min-height: 0;
         width: min(560px, 100%);
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+      }
+
+      .month-slide {
+        position: absolute;
+        inset: 0;
         background: rgba(255, 255, 255, 0.32);
         border: 1px solid var(--border);
         border-radius: 18px;
         padding: clamp(6px, 1.2vh, 12px);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        margin-top: 0;
         display: flex;
         flex-direction: column;
+        will-change: transform;
       }
 
       .month-title-bar {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 8px;
+        justify-content: center;
         margin-bottom: clamp(4px, 0.6vh, 6px);
         flex-shrink: 0;
       }
 
       .month-title {
-        flex: 1;
         font-size: 18px;
         letter-spacing: 0.18em;
         text-transform: uppercase;
@@ -284,30 +290,51 @@
         text-align: center;
       }
 
-      .month-nav {
-        appearance: none;
-        background: var(--card);
-        border: 1px solid var(--border);
+      /* Floating nav arrows — pointer devices only */
+      .nav-float {
+        display: none;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255, 255, 255, 0.22);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
         color: var(--text);
-        width: clamp(24px, 3.5vh, 32px);
-        height: clamp(24px, 3.5vh, 32px);
-        border-radius: 8px;
+        width: 40px;
+        height: 72px;
         cursor: pointer;
-        font-size: 18px;
+        font-size: 26px;
         line-height: 1;
-        display: flex;
         align-items: center;
         justify-content: center;
-        transition: background 120ms ease, transform 120ms ease;
-        flex-shrink: 0;
+        z-index: 100;
+        transition: background 150ms ease;
+        appearance: none;
       }
 
-      .month-nav:hover {
-        background: rgba(255, 255, 255, 0.65);
+      @media (hover: hover) and (pointer: fine) {
+        .nav-float {
+          display: flex;
+        }
       }
 
-      .month-nav:active {
-        transform: scale(0.95);
+      .nav-float:hover {
+        background: rgba(255, 255, 255, 0.45);
+      }
+
+      .nav-float:active {
+        background: rgba(255, 255, 255, 0.62);
+      }
+
+      .nav-float-prev {
+        left: 0;
+        border-radius: 0 12px 12px 0;
+      }
+
+      .nav-float-next {
+        right: 0;
+        border-radius: 12px 0 0 12px;
       }
 
       .cell.loading {
@@ -480,38 +507,51 @@
       </section>
 
 
-      <section class="month" aria-label="Month overview">
-        <div class="month-title-bar">
-          <button
-            class="month-nav"
-            id="month-prev"
-            type="button"
-            aria-label="Previous month"
-          >
-            ‹
-          </button>
-          <div class="month-title" id="month-title">This month</div>
-          <button
-            class="month-nav"
-            id="month-next"
-            type="button"
-            aria-label="Next month"
-          >
-            ›
-          </button>
+      <div class="month-carousel" id="month-carousel" aria-label="Month overview">
+        <div class="month-slide" id="slide-0">
+          <div class="month-title-bar">
+            <div class="month-title" id="slide-title-0">—</div>
+          </div>
+          <div class="month-grid" id="slide-grid-0"></div>
+          <div class="legend">
+            <span><span class="dot go"></span>Go out</span>
+            <span><span class="dot stay"></span>Stay home</span>
+            <span><span class="dot rainy"></span>Rain</span>
+            <span><span class="dot climate"></span>Climate estimate</span>
+          </div>
         </div>
-        <div class="month-grid" id="month-grid"></div>
-        <div class="legend">
-          <span><span class="dot go"></span>Go out</span>
-          <span><span class="dot stay"></span>Stay home</span>
-          <span><span class="dot rainy"></span>Rain</span>
-          <span><span class="dot climate"></span>Climate estimate</span>
+        <div class="month-slide" id="slide-1">
+          <div class="month-title-bar">
+            <div class="month-title" id="slide-title-1">—</div>
+          </div>
+          <div class="month-grid" id="slide-grid-1"></div>
+          <div class="legend">
+            <span><span class="dot go"></span>Go out</span>
+            <span><span class="dot stay"></span>Stay home</span>
+            <span><span class="dot rainy"></span>Rain</span>
+            <span><span class="dot climate"></span>Climate estimate</span>
+          </div>
         </div>
-      </section>
+        <div class="month-slide" id="slide-2">
+          <div class="month-title-bar">
+            <div class="month-title" id="slide-title-2">—</div>
+          </div>
+          <div class="month-grid" id="slide-grid-2"></div>
+          <div class="legend">
+            <span><span class="dot go"></span>Go out</span>
+            <span><span class="dot stay"></span>Stay home</span>
+            <span><span class="dot rainy"></span>Rain</span>
+            <span><span class="dot climate"></span>Climate estimate</span>
+          </div>
+        </div>
+      </div>
 
       <button class="refresh" id="refresh" type="button">Refresh</button>
       <footer id="updated">—</footer>
     </main>
+
+    <button class="nav-float nav-float-prev" id="nav-float-prev" type="button" aria-label="Previous month">‹</button>
+    <button class="nav-float nav-float-next" id="nav-float-next" type="button" aria-label="Next month">›</button>
 
     <script>
       // ─────────────────────────────────────────────────────────────────────
@@ -1095,26 +1135,23 @@
       ];
       const WEEKDAY_SHORT = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-      function renderMonth(monthData) {
+      function renderMonth(monthData, titleEl, gridEl) {
         const { year, month0, totalDays, todayDay, days } = monthData;
-        const titleEl = document.getElementById("month-title");
-        const grid = document.getElementById("month-grid");
         titleEl.textContent = `${MONTH_NAMES[month0]} ${year}`;
-
-        grid.innerHTML = "";
+        gridEl.innerHTML = "";
 
         for (const w of WEEKDAY_SHORT) {
           const h = document.createElement("div");
           h.className = "weekday";
           h.textContent = w;
-          grid.appendChild(h);
+          gridEl.appendChild(h);
         }
 
         const firstWd = isoWeekday(new Date(year, month0, 1));
         for (let i = 0; i < firstWd; i++) {
           const c = document.createElement("div");
           c.className = "cell empty";
-          grid.appendChild(c);
+          gridEl.appendChild(c);
         }
 
         for (let d = 1; d <= totalDays; d++) {
@@ -1136,7 +1173,6 @@
           if (data?.tmax != null) {
             const meta = document.createElement("div");
             meta.className = "day-meta";
-            const wet =
             meta.textContent = `${Math.round(data.tmax)}°`;
             cell.appendChild(meta);
           }
@@ -1162,31 +1198,24 @@
             }
           }
 
-          grid.appendChild(cell);
+          gridEl.appendChild(cell);
         }
       }
 
-      // Viewed-month state — starts at the current month
-      const _now = new Date();
-      let viewedYear = _now.getFullYear();
-      let viewedMonth0 = _now.getMonth();
-
-      function renderMonthPlaceholder(year, month0) {
-        const titleEl = document.getElementById("month-title");
-        const grid = document.getElementById("month-grid");
+      function renderMonthPlaceholder(year, month0, titleEl, gridEl) {
         titleEl.textContent = `${MONTH_NAMES[month0]} ${year}`;
-        grid.innerHTML = "";
+        gridEl.innerHTML = "";
         for (const w of WEEKDAY_SHORT) {
           const h = document.createElement("div");
           h.className = "weekday";
           h.textContent = w;
-          grid.appendChild(h);
+          gridEl.appendChild(h);
         }
         const firstWd = isoWeekday(new Date(year, month0, 1));
         for (let i = 0; i < firstWd; i++) {
           const c = document.createElement("div");
           c.className = "cell empty";
-          grid.appendChild(c);
+          gridEl.appendChild(c);
         }
         const total = daysInMonth(year, month0);
         for (let d = 1; d <= total; d++) {
@@ -1196,50 +1225,132 @@
           num.className = "day-num";
           num.textContent = String(d);
           cell.appendChild(num);
-          grid.appendChild(cell);
+          gridEl.appendChild(cell);
         }
       }
 
-      // Token to avoid stale fetches overwriting a newer navigation
-      let monthFetchToken = 0;
+      // ─────────────────────────────────────────────────────────────────────
+      // Carousel — 3 physical slots (prev | curr | next), swipeable
+      // ─────────────────────────────────────────────────────────────────────
+      const ANIM_MS = 360;
 
-      async function updateMonth(showPlaceholder = false) {
-        const token = ++monthFetchToken;
-        if (showPlaceholder) renderMonthPlaceholder(viewedYear, viewedMonth0);
+      const slides      = [0, 1, 2].map((i) => document.getElementById(`slide-${i}`));
+      const slideTitles = [0, 1, 2].map((i) => document.getElementById(`slide-title-${i}`));
+      const slideGrids  = [0, 1, 2].map((i) => document.getElementById(`slide-grid-${i}`));
+
+      // Center month (currently displayed)
+      const _now = new Date();
+      let carouselYear   = _now.getFullYear();
+      let carouselMonth0 = _now.getMonth();
+      // Keep viewedYear/viewedMonth0 aliases for the auto-refresh interval below
+      let viewedYear   = carouselYear;
+      let viewedMonth0 = carouselMonth0;
+
+      // slotCol[i] = column of slides[i]: -1 (left), 0 (center), +1 (right)
+      let slotCol = [-1, 0, 1];
+      let isAnimating = false;
+
+      // Per-slot fetch tokens — discard results from superseded requests
+      const slotTokens = [0, 0, 0];
+
+      function setSlidePos(i, col, animated) {
+        slides[i].style.transition = animated
+          ? `transform ${ANIM_MS}ms cubic-bezier(0.4,0,0.2,1)`
+          : "none";
+        slides[i].style.transform = `translateX(${col * 100}%)`;
+      }
+
+      function offsetMonthBy(year, month0, delta) {
+        let m = month0 + delta, y = year;
+        while (m < 0)  { m += 12; y--; }
+        while (m > 11) { m -= 12; y++; }
+        return { year: y, month0: m };
+      }
+
+      async function loadSlide(slotIdx, year, month0) {
+        const token = ++slotTokens[slotIdx];
+        renderMonthPlaceholder(year, month0, slideTitles[slotIdx], slideGrids[slotIdx]);
         try {
-          const data = await buildMonthData(viewedYear, viewedMonth0);
-          if (token !== monthFetchToken) return; // a newer fetch has started
-          renderMonth(data);
+          const data = await buildMonthData(year, month0);
+          if (slotTokens[slotIdx] !== token) return;
+          renderMonth(data, slideTitles[slotIdx], slideGrids[slotIdx]);
         } catch (err) {
-          if (token !== monthFetchToken) return;
-          console.error("Month overview failed:", err);
-          const grid = document.getElementById("month-grid");
-          grid.innerHTML = `<div style="grid-column: 1 / -1; text-align:center; color: var(--muted); font-size: 18px; padding: 12px;">Couldn't load month overview: ${err.message}</div>`;
+          if (slotTokens[slotIdx] !== token) return;
+          console.error("Slide load failed:", err);
+          slideGrids[slotIdx].innerHTML =
+            `<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:18px;padding:12px;">Couldn't load: ${err.message}</div>`;
         }
       }
 
-      function shiftMonth(delta) {
-        let m = viewedMonth0 + delta;
-        let y = viewedYear;
-        while (m < 0) {
-          m += 12;
-          y -= 1;
+      function initCarousel() {
+        for (let i = 0; i < 3; i++) {
+          setSlidePos(i, slotCol[i], false);
+          const { year, month0 } = offsetMonthBy(carouselYear, carouselMonth0, slotCol[i]);
+          loadSlide(i, year, month0);
         }
-        while (m > 11) {
-          m -= 12;
-          y += 1;
-        }
-        viewedYear = y;
-        viewedMonth0 = m;
-        updateMonth(true);
       }
 
-      document
-        .getElementById("month-prev")
-        .addEventListener("click", () => shiftMonth(-1));
-      document
-        .getElementById("month-next")
-        .addEventListener("click", () => shiftMonth(1));
+      function navigateCarousel(dir) { // -1 = prev month, +1 = next month
+        if (isAnimating) return;
+        isAnimating = true;
+
+        // Advance the logical center
+        const next = offsetMonthBy(carouselYear, carouselMonth0, dir);
+        carouselYear   = next.year;
+        carouselMonth0 = next.month0;
+        viewedYear   = carouselYear;
+        viewedMonth0 = carouselMonth0;
+
+        // Slide all panels left (dir=+1) or right (dir=-1) with animation
+        for (let i = 0; i < 3; i++) {
+          slotCol[i] -= dir;
+          setSlidePos(i, slotCol[i], true);
+        }
+
+        setTimeout(() => {
+          // Recycle the panel that slid off-screen (±2) to the opposite edge
+          for (let i = 0; i < 3; i++) {
+            if (Math.abs(slotCol[i]) === 2) {
+              const newCol = -(slotCol[i] / 2); // -2 → +1, +2 → -1
+              slotCol[i] = newCol;
+              setSlidePos(i, newCol, false);
+              const { year, month0 } = offsetMonthBy(carouselYear, carouselMonth0, newCol);
+              loadSlide(i, year, month0);
+              break;
+            }
+          }
+          isAnimating = false;
+        }, ANIM_MS);
+      }
+
+      // Touch swipe on the carousel
+      const carouselEl = document.getElementById("month-carousel");
+      let touchStartX = null, touchStartY = null;
+      carouselEl.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      carouselEl.addEventListener("touchend", (e) => {
+        if (touchStartX === null) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        touchStartX = null;
+        if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+          navigateCarousel(dx < 0 ? 1 : -1);
+        }
+      }, { passive: true });
+
+      // Floating desktop arrows
+      document.getElementById("nav-float-prev").addEventListener("click", () => navigateCarousel(-1));
+      document.getElementById("nav-float-next").addEventListener("click", () => navigateCarousel(1));
+
+      // Reload all 3 visible slots (e.g. on location change or manual refresh)
+      function refreshCarousel() {
+        for (let i = 0; i < 3; i++) {
+          const { year, month0 } = offsetMonthBy(carouselYear, carouselMonth0, slotCol[i]);
+          loadSlide(i, year, month0);
+        }
+      }
 
       // Populate the location dropdown
       const locationSelect = document.getElementById("location");
@@ -1259,26 +1370,26 @@
         localStorage.setItem(LOCATION_STORAGE_KEY, selectedLocationId);
         syncDocumentTitle();
         update();
-        updateMonth(true); // show placeholder while new location loads
+        refreshCarousel();
       });
 
 
       els.refresh.addEventListener("click", () => {
         update();
-        updateMonth();
+        refreshCarousel();
       });
       update();
-      updateMonth();
+      initCarousel();
       setInterval(() => {
         update();
-        // Only auto-refresh the month grid when viewing the current month —
+        // Only auto-refresh when the center month is the current month —
         // historical/climate data for other months doesn't change.
         const now = new Date();
         if (
-          viewedYear === now.getFullYear() &&
-          viewedMonth0 === now.getMonth()
+          carouselYear === now.getFullYear() &&
+          carouselMonth0 === now.getMonth()
         ) {
-          updateMonth();
+          refreshCarousel();
         }
       }, REFRESH_MS);
     </script>
