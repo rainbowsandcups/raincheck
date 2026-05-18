@@ -173,10 +173,16 @@
 
       .stats {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
         gap: clamp(6px, 1vh, 12px);
         width: min(560px, 100%);
         margin-top: 0;
+      }
+
+      @media (min-width: 480px) {
+        .stats {
+          grid-template-columns: repeat(3, 1fr);
+        }
       }
 
 
