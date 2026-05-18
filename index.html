@@ -10,18 +10,16 @@
       type="image/svg+xml"
       href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%230f172a'/%3E%3C/svg%3E"
     />
-    <title>Raincheck — Zürich Oerlikon</title>
+    <title>Raincheck</title>
     <style>
       :root {
-        --bg-go: #16a34a;
-        --bg-go-2: #065f46;
-        --bg-stay: #dc2626;
-        --bg-stay-2: #7f1d1d;
-        --bg-loading: #0f172a;
-        --text: #ffffff;
-        --muted: rgba(255, 255, 255, 0.78);
-        --card: rgba(255, 255, 255, 0.1);
-        --border: rgba(255, 255, 255, 0.18);
+        --bg-loading: #e2e8f0;
+        --text: #0f172a;
+        --muted: rgba(15, 23, 42, 0.7);
+        --card: rgba(255, 255, 255, 0.4);
+        --border: rgba(255, 255, 255, 0.6);
+        --accent-go: #059669;
+        --accent-stay: #e11d48;
       }
 
       * {
@@ -47,17 +45,21 @@
 
       body.go {
         background: radial-gradient(
-          ellipse at top,
-          var(--bg-go) 0%,
-          var(--bg-go-2) 100%
+          ellipse 150% 110% at top,
+          #f0fdf4 0%,
+          #bbf7d0 30%,
+          #6ee7b7 65%,
+          #10b981 100%
         );
       }
 
       body.stay {
         background: radial-gradient(
-          ellipse at top,
-          var(--bg-stay) 0%,
-          var(--bg-stay-2) 100%
+          ellipse 150% 110% at top,
+          #fff1f2 0%,
+          #fecdd3 30%,
+          #fb7185 62%,
+          #e11d48 100%
         );
       }
 
@@ -78,6 +80,38 @@
         color: var(--muted);
       }
 
+      select.location {
+        appearance: none;
+        -webkit-appearance: none;
+        background: transparent;
+        border: none;
+        font: inherit;
+        font-size: 14px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        text-align: center;
+        text-align-last: center;
+        padding: 4px 22px 4px 22px;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' stroke='%230f172a' stroke-opacity='0.7' fill='none' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 4px center;
+        background-size: 12px;
+      }
+
+      select.location:focus {
+        outline: none;
+        color: var(--text);
+      }
+
+      select.location option {
+        color: #0f172a;
+        background: #fff;
+        text-transform: none;
+        letter-spacing: 0;
+        font-size: 14px;
+      }
+
       .icon {
         font-size: clamp(28px, 5.5vh, 88px);
         line-height: 1;
@@ -92,7 +126,7 @@
         text-align: center;
         line-height: 1;
         margin: 0;
-        text-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+        text-shadow: 0 2px 10px rgba(255, 255, 255, 0.45);
       }
 
       .reason {
@@ -104,10 +138,52 @@
 
       .stats {
         display: grid;
-        grid-template-columns: repeat(2, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
         gap: clamp(6px, 1vh, 12px);
-        width: min(420px, 100%);
+        width: min(560px, 100%);
         margin-top: 0;
+      }
+
+      .threshold-picker {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 11px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .threshold-picker .group {
+        display: inline-flex;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 3px;
+        gap: 2px;
+      }
+
+      .threshold-picker button {
+        appearance: none;
+        background: transparent;
+        color: var(--muted);
+        border: none;
+        border-radius: 999px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        letter-spacing: 0.04em;
+        transition: background 120ms ease, color 120ms ease;
+      }
+
+      .threshold-picker button:hover {
+        color: var(--text);
+      }
+
+      .threshold-picker button.active {
+        background: rgba(255, 255, 255, 0.75);
+        color: var(--text);
       }
 
       .stat {
@@ -152,7 +228,7 @@
       }
 
       button.refresh:hover {
-        background: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.65);
       }
 
       button.refresh:active {
@@ -160,7 +236,7 @@
       }
 
       .error {
-        background: rgba(0, 0, 0, 0.25);
+        background: rgba(255, 255, 255, 0.45);
         padding: 12px 16px;
         border-radius: 10px;
         font-size: 14px;
@@ -193,7 +269,7 @@
         flex: 1 1 0;
         min-height: 0;
         width: min(560px, 100%);
-        background: rgba(0, 0, 0, 0.18);
+        background: rgba(255, 255, 255, 0.32);
         border: 1px solid var(--border);
         border-radius: 18px;
         padding: clamp(10px, 1.5vh, 20px);
@@ -224,7 +300,7 @@
 
       .month-nav {
         appearance: none;
-        background: rgba(255, 255, 255, 0.08);
+        background: var(--card);
         border: 1px solid var(--border);
         color: var(--text);
         width: 30px;
@@ -241,7 +317,7 @@
       }
 
       .month-nav:hover {
-        background: rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.65);
       }
 
       .month-nav:active {
@@ -280,9 +356,9 @@
         justify-content: center;
         gap: 1px;
         font-weight: 600;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        color: rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        color: rgba(15, 23, 42, 0.55);
         position: relative;
       }
 
@@ -292,26 +368,26 @@
       }
 
       .cell.go {
-        background: #16a34a;
-        color: white;
-        border-color: rgba(255, 255, 255, 0.2);
+        background: #10b981;
+        color: #0f172a;
+        border-color: rgba(255, 255, 255, 0.7);
       }
 
       .cell.stay {
-        background: #dc2626;
-        color: white;
-        border-color: rgba(255, 255, 255, 0.2);
+        background: #f43f5e;
+        color: #0f172a;
+        border-color: rgba(255, 255, 255, 0.7);
       }
 
       .cell.climate {
-        opacity: 0.6;
+        opacity: 0.55;
         border-style: dashed;
       }
 
       .cell.today {
-        outline: 2px solid white;
+        outline: 2px solid #0f172a;
         outline-offset: 2px;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
       }
 
       .cell .day-num {
@@ -349,22 +425,26 @@
       }
 
       .legend .dot.go {
-        background: #16a34a;
+        background: #10b981;
       }
 
       .legend .dot.stay {
-        background: #dc2626;
+        background: #f43f5e;
       }
 
       .legend .dot.climate {
         background: transparent;
-        border: 1.5px dashed rgba(255, 255, 255, 0.6);
+        border: 1.5px dashed rgba(15, 23, 42, 0.55);
       }
     </style>
   </head>
   <body>
     <main>
-      <div class="location" id="location">Zürich Oerlikon</div>
+      <select
+        class="location"
+        id="location"
+        aria-label="Choose location"
+      ></select>
       <div class="icon" id="icon" aria-hidden="true">⏳</div>
       <h1 class="verdict" id="verdict">Loading…</h1>
       <div class="reason" id="reason">Fetching current conditions</div>
@@ -378,7 +458,20 @@
           <div class="label">Condition</div>
           <div class="value" id="condition">–</div>
         </div>
+        <div class="stat">
+          <div class="label">Rain (8–19)</div>
+          <div class="value" id="rain">–</div>
+        </div>
       </section>
+
+      <div class="threshold-picker" aria-label="Minimum temperature threshold">
+        <span>Min temp</span>
+        <div class="group" id="threshold-picker">
+          <button type="button" data-value="15">15°</button>
+          <button type="button" data-value="16">16°</button>
+          <button type="button" data-value="17">17°</button>
+        </div>
+      </div>
 
       <section class="month" aria-label="Month overview">
         <div class="month-title-bar">
@@ -422,12 +515,48 @@
       const USE_OPENWEATHER = false;
       const OPENWEATHER_API_KEY = "YOUR_OPENWEATHER_API_KEY_HERE";
 
-      // Zürich Oerlikon coordinates
-      const LAT = 47.4115;
-      const LON = 8.5439;
+      // Available locations. The first one is the default.
+      const LOCATIONS = [
+        { id: "oerlikon", label: "Zürich Oerlikon", lat: 47.4115, lon: 8.5439 },
+        {
+          id: "altstetten",
+          label: "Zürich Altstetten",
+          lat: 47.3917,
+          lon: 8.4886,
+        },
+        { id: "eggenwil", label: "Eggenwil (AG)", lat: 47.3696, lon: 8.3428 },
+        {
+          id: "schwieberdingen",
+          label: "Schwieberdingen (DE)",
+          lat: 48.8761,
+          lon: 9.0775,
+        },
+        {
+          id: "magic-lake",
+          label: "Camping Magic Lake",
+          lat: 46.1321,
+          lon: 9.2886,
+        },
+      ];
 
-      const TEMP_THRESHOLD_C = 15;
-      const RAIN_MM_PER_HOUR_THRESHOLD = 0.5; // > this in any hour 9–18 counts as "actual rain"
+      const LOCATION_STORAGE_KEY = "raincheck-location";
+      let selectedLocationId =
+        localStorage.getItem(LOCATION_STORAGE_KEY) || LOCATIONS[0].id;
+      if (!LOCATIONS.find((l) => l.id === selectedLocationId)) {
+        selectedLocationId = LOCATIONS[0].id;
+      }
+      function currentLocation() {
+        return (
+          LOCATIONS.find((l) => l.id === selectedLocationId) ?? LOCATIONS[0]
+        );
+      }
+
+      const TEMP_STORAGE_KEY = "raincheck-temp-threshold";
+      const ALLOWED_TEMPS = [15, 16, 17];
+      let TEMP_THRESHOLD_C =
+        parseInt(localStorage.getItem(TEMP_STORAGE_KEY), 10) || 17;
+      if (!ALLOWED_TEMPS.includes(TEMP_THRESHOLD_C)) TEMP_THRESHOLD_C = 17;
+      const RAIN_MM_PER_HOUR_THRESHOLD = 0.5; // > this in any hour 8–18 counts as "actual rain"
       const DAYTIME_START_HOUR = 8; // inclusive
       const DAYTIME_END_HOUR = 19; // exclusive — so hours 8..18 are checked
       const REFRESH_MS = 10 * 60 * 1000; // 10 minutes
@@ -471,9 +600,9 @@
       // Verdict helpers — shared by top card AND month grid
       // ─────────────────────────────────────────────────────────────────────
       function parseHourlyTime(s) {
-        // Open-Meteo with timezone=Europe/Zurich returns strings like
-        // "2026-05-12T09:00" already in local time. Parse the parts directly
-        // so browser timezone doesn't shift them.
+        // Open-Meteo with timezone=auto returns strings like
+        // "2026-05-12T09:00" already in the location's local time.
+        // Parse the parts directly so the browser's timezone doesn't shift them.
         const [date, time] = s.split("T");
         const [y, m, d] = date.split("-").map(Number);
         const [h] = time.split(":").map(Number);
@@ -505,13 +634,14 @@
       // Fetchers
       // ─────────────────────────────────────────────────────────────────────
       async function fetchOpenMeteo() {
+        const loc = currentLocation();
         const url =
           `https://api.open-meteo.com/v1/forecast` +
-          `?latitude=${LAT}&longitude=${LON}` +
+          `?latitude=${loc.lat}&longitude=${loc.lon}` +
           `&current=temperature_2m,weather_code` +
           `&hourly=rain` +
           `&daily=temperature_2m_max` +
-          `&timezone=Europe/Zurich` +
+          `&timezone=auto` +
           `&forecast_days=1`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Open-Meteo HTTP ${res.status}`);
@@ -542,16 +672,17 @@
       async function fetchOpenWeather() {
         // NOTE: OpenWeatherMap free tier doesn't easily expose hourly rain
         // for a full day. This path uses a simpler "is it raining now"
-        // approximation — it does NOT implement the 9–18 rain-window rule.
+        // approximation — it does NOT implement the 8–19 rain-window rule.
         if (
           !OPENWEATHER_API_KEY ||
           OPENWEATHER_API_KEY === "YOUR_OPENWEATHER_API_KEY_HERE"
         ) {
           throw new Error("Missing OpenWeatherMap API key");
         }
+        const loc = currentLocation();
         const url =
           `https://api.openweathermap.org/data/2.5/weather` +
-          `?lat=${LAT}&lon=${LON}&units=metric&appid=${OPENWEATHER_API_KEY}`;
+          `?lat=${loc.lat}&lon=${loc.lon}&units=metric&appid=${OPENWEATHER_API_KEY}`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`OpenWeatherMap HTTP ${res.status}`);
         const data = await res.json();
@@ -611,10 +742,12 @@
         icon: document.getElementById("icon"),
         temp: document.getElementById("temp"),
         condition: document.getElementById("condition"),
+        rain: document.getElementById("rain"),
         updated: document.getElementById("updated"),
         themeColor: document.getElementById("theme-color"),
         favicon: document.getElementById("favicon"),
         refresh: document.getElementById("refresh"),
+        thresholdPicker: document.getElementById("threshold-picker"),
       };
 
       function faviconFor(hexColor) {
@@ -633,7 +766,7 @@
 
         document.body.classList.toggle("go", goOut);
         document.body.classList.toggle("stay", !goOut);
-        const verdictColor = goOut ? "#16a34a" : "#dc2626";
+        const verdictColor = goOut ? "#10b981" : "#e11d48";
         els.themeColor.setAttribute("content", verdictColor);
         els.favicon.setAttribute("href", faviconFor(verdictColor));
 
@@ -641,6 +774,13 @@
         els.icon.textContent = emoji;
         els.temp.textContent = `${Math.round(tempC)}°C`;
         els.condition.textContent = label;
+        const rainMm = maxRainToday ?? 0;
+        els.rain.textContent =
+          rainMm === 0
+            ? "None"
+            : rainMm < RAIN_MM_PER_HOUR_THRESHOLD
+              ? `${rainMm.toFixed(1)} mm (drizzle)`
+              : `${rainMm.toFixed(1)} mm/h`;
 
         const reasons = [];
         if (tmaxToday != null && tmaxToday < TEMP_THRESHOLD_C) {
@@ -673,6 +813,7 @@
         els.icon.textContent = "⚠️";
         els.temp.textContent = "–";
         els.condition.textContent = "–";
+        els.rain.textContent = "–";
       }
 
       async function update() {
@@ -704,12 +845,13 @@
       }
 
       async function fetchForecastRange(pastDays, forecastDays) {
+        const loc = currentLocation();
         const url =
           `https://api.open-meteo.com/v1/forecast` +
-          `?latitude=${LAT}&longitude=${LON}` +
+          `?latitude=${loc.lat}&longitude=${loc.lon}` +
           `&daily=temperature_2m_max` +
           `&hourly=rain` +
-          `&timezone=Europe/Zurich` +
+          `&timezone=auto` +
           `&past_days=${pastDays}` +
           `&forecast_days=${forecastDays}`;
         const res = await fetch(url);
@@ -718,15 +860,16 @@
       }
 
       async function fetchArchiveYear(year, month0, fromDay, toDay) {
+        const loc = currentLocation();
         const start = `${year}-${pad2(month0 + 1)}-${pad2(fromDay)}`;
         const end = `${year}-${pad2(month0 + 1)}-${pad2(toDay)}`;
         const url =
           `https://archive-api.open-meteo.com/v1/archive` +
-          `?latitude=${LAT}&longitude=${LON}` +
+          `?latitude=${loc.lat}&longitude=${loc.lon}` +
           `&start_date=${start}&end_date=${end}` +
           `&daily=temperature_2m_max` +
           `&hourly=rain` +
-          `&timezone=Europe/Zurich`;
+          `&timezone=auto`;
         const res = await fetch(url);
         if (!res.ok) throw new Error(`Archive HTTP ${res.status}`);
         return res.json();
@@ -985,7 +1128,9 @@
           } else if (data?.tmax != null) {
             const meta = document.createElement("div");
             meta.className = "day-meta";
-            meta.textContent = `${Math.round(data.tmax)}°`;
+            const wet =
+              (data.maxRain ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD ? " 💧" : "";
+            meta.textContent = `${Math.round(data.tmax)}°${wet}`;
             cell.appendChild(meta);
           }
 
@@ -1088,6 +1233,49 @@
       document
         .getElementById("month-next")
         .addEventListener("click", () => shiftMonth(1));
+
+      // Populate the location dropdown
+      const locationSelect = document.getElementById("location");
+      for (const loc of LOCATIONS) {
+        const opt = document.createElement("option");
+        opt.value = loc.id;
+        opt.textContent = loc.label;
+        locationSelect.appendChild(opt);
+      }
+      locationSelect.value = selectedLocationId;
+      function syncDocumentTitle() {
+        document.title = `Raincheck — ${currentLocation().label}`;
+      }
+      syncDocumentTitle();
+      locationSelect.addEventListener("change", () => {
+        selectedLocationId = locationSelect.value;
+        localStorage.setItem(LOCATION_STORAGE_KEY, selectedLocationId);
+        syncDocumentTitle();
+        update();
+        updateMonth(true); // show placeholder while new location loads
+      });
+
+      // Threshold picker — 3 segmented buttons
+      function syncThresholdButtons() {
+        for (const btn of els.thresholdPicker.querySelectorAll("button")) {
+          btn.classList.toggle(
+            "active",
+            Number(btn.dataset.value) === TEMP_THRESHOLD_C,
+          );
+        }
+      }
+      syncThresholdButtons();
+      els.thresholdPicker.addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-value]");
+        if (!btn) return;
+        const v = Number(btn.dataset.value);
+        if (!ALLOWED_TEMPS.includes(v) || v === TEMP_THRESHOLD_C) return;
+        TEMP_THRESHOLD_C = v;
+        localStorage.setItem(TEMP_STORAGE_KEY, String(v));
+        syncThresholdButtons();
+        update();
+        updateMonth(true);
+      });
 
       els.refresh.addEventListener("click", () => {
         update();
