@@ -935,6 +935,8 @@
           for (let d = fromDay; d <= toDay; d++) {
             let go = 0;
             let total = 0;
+            let tmaxSum = 0;
+            let tmaxCount = 0;
             for (const arch of archives) {
               const t = arch.daily.time;
               let tmax = null;
@@ -947,6 +949,8 @@
                 break;
               }
               if (tmax == null || archYear == null) continue;
+              tmaxSum += tmax;
+              tmaxCount++;
               const maxRain = maxDaytimeRainForDay(
                 arch.hourly,
                 archYear,
@@ -959,8 +963,10 @@
               if (v) go++;
             }
             const probability = total > 0 ? go / total : null;
+            const avgTmax = tmaxCount > 0 ? tmaxSum / tmaxCount : null;
             days[d] = {
               day: d,
+              tmax: avgTmax,
               probability,
               goOut: probability != null ? probability >= 0.5 : null,
               source: "climate",
@@ -1168,12 +1174,7 @@
           num.textContent = String(d);
           cell.appendChild(num);
 
-          if (data?.source === "climate" && data.probability != null) {
-            const meta = document.createElement("div");
-            meta.className = "day-meta";
-            meta.textContent = `${Math.round(data.probability * 100)}%`;
-            cell.appendChild(meta);
-          } else if (data?.tmax != null) {
+          if (data?.tmax != null) {
             const meta = document.createElement("div");
             meta.className = "day-meta";
             const wet =
