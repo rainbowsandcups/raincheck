@@ -165,47 +165,6 @@
         margin-top: 0;
       }
 
-      .threshold-picker {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 11px;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: var(--muted);
-      }
-
-      .threshold-picker .group {
-        display: inline-flex;
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        padding: 3px;
-        gap: 2px;
-      }
-
-      .threshold-picker button {
-        appearance: none;
-        background: transparent;
-        color: var(--muted);
-        border: none;
-        border-radius: 999px;
-        padding: 6px 12px;
-        font-size: 12px;
-        font-weight: 600;
-        cursor: pointer;
-        letter-spacing: 0.04em;
-        transition: background 120ms ease, color 120ms ease;
-      }
-
-      .threshold-picker button:hover {
-        color: var(--text);
-      }
-
-      .threshold-picker button.active {
-        background: rgba(255, 255, 255, 0.75);
-        color: var(--text);
-      }
 
       .stat {
         background: var(--card);
@@ -511,14 +470,6 @@
         </div>
       </section>
 
-      <div class="threshold-picker" aria-label="Minimum temperature threshold">
-        <span>Min temp</span>
-        <div class="group" id="threshold-picker">
-          <button type="button" data-value="15">15°</button>
-          <button type="button" data-value="16">16°</button>
-          <button type="button" data-value="17">17°</button>
-        </div>
-      </div>
 
       <section class="month" aria-label="Month overview">
         <div class="month-title-bar">
@@ -599,11 +550,7 @@
         );
       }
 
-      const TEMP_STORAGE_KEY = "raincheck-temp-threshold";
-      const ALLOWED_TEMPS = [15, 16, 17];
-      let TEMP_THRESHOLD_C =
-        parseInt(localStorage.getItem(TEMP_STORAGE_KEY), 10) || 17;
-      if (!ALLOWED_TEMPS.includes(TEMP_THRESHOLD_C)) TEMP_THRESHOLD_C = 17;
+      const TEMP_THRESHOLD_C = 16;
       const RAIN_MM_PER_HOUR_THRESHOLD = 0.5; // > this in any hour 8–18 counts as "actual rain"
       const DAYTIME_START_HOUR = 8; // inclusive
       const DAYTIME_END_HOUR = 19; // exclusive — so hours 8..18 are checked
@@ -795,7 +742,6 @@
         themeColor: document.getElementById("theme-color"),
         favicon: document.getElementById("favicon"),
         refresh: document.getElementById("refresh"),
-        thresholdPicker: document.getElementById("threshold-picker"),
       };
 
       function faviconFor(hexColor) {
@@ -1311,27 +1257,6 @@
         updateMonth(true); // show placeholder while new location loads
       });
 
-      // Threshold picker — 3 segmented buttons
-      function syncThresholdButtons() {
-        for (const btn of els.thresholdPicker.querySelectorAll("button")) {
-          btn.classList.toggle(
-            "active",
-            Number(btn.dataset.value) === TEMP_THRESHOLD_C,
-          );
-        }
-      }
-      syncThresholdButtons();
-      els.thresholdPicker.addEventListener("click", (e) => {
-        const btn = e.target.closest("button[data-value]");
-        if (!btn) return;
-        const v = Number(btn.dataset.value);
-        if (!ALLOWED_TEMPS.includes(v) || v === TEMP_THRESHOLD_C) return;
-        TEMP_THRESHOLD_C = v;
-        localStorage.setItem(TEMP_STORAGE_KEY, String(v));
-        syncThresholdButtons();
-        update();
-        updateMonth(true);
-      });
 
       els.refresh.addEventListener("click", () => {
         update();
