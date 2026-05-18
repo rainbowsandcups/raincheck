@@ -127,6 +127,27 @@
         line-height: 1;
         margin: 0;
         text-shadow: 0 2px 10px rgba(255, 255, 255, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.25em;
+      }
+
+      .verdict-dot {
+        display: inline-block;
+        width: 0.65em;
+        height: 0.65em;
+        border-radius: 50%;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .verdict-dot.go {
+        background: #10b981;
+      }
+
+      .verdict-dot.stay {
+        background: #e11d48;
       }
 
       .reason {
@@ -792,7 +813,9 @@
         els.themeColor.setAttribute("content", verdictColor);
         els.favicon.setAttribute("href", faviconFor(verdictColor));
 
-        els.verdict.textContent = goOut ? "🟢 GO OUT" : "🔴 STAY HOME";
+        els.verdict.innerHTML = goOut
+          ? '<span class="verdict-dot go"></span> GO OUT'
+          : '<span class="verdict-dot stay"></span> STAY HOME';
         els.icon.textContent = emoji;
         els.temp.textContent = `${Math.round(tempC)}°C`;
         els.condition.textContent = label;
