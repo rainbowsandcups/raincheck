@@ -262,9 +262,9 @@
 
       /* Month overview — carousel */
       .month-carousel {
-        /* Mobile default: full-width card, no peek (neighbours fully hidden) */
-        --card-w: calc(100vw - 32px);
-        --card-gap: 16px;
+        /* Mobile: card leaves ~20 px of the neighbour's white edge visible */
+        --card-w: calc(100vw - 64px);
+        --card-gap: 10px;
         width: 100vw;
         height: clamp(400px, 110vw, 620px);
         flex-shrink: 0;
@@ -272,10 +272,11 @@
         overflow: hidden;
       }
 
-      /* Desktop: peek effect — adjacent months partially visible */
+      /* Desktop: wider peek with edge fade */
       @media (min-width: 600px) {
         .month-carousel {
           --card-w: clamp(340px, 72vw, 520px);
+          --card-gap: 16px;
           height: clamp(420px, 60vw, 620px);
           -webkit-mask-image: linear-gradient(
             to right, transparent 0, black 48px,
@@ -286,6 +287,9 @@
             black calc(100% - 48px), transparent 100%
           );
         }
+        .month-slide {
+          opacity: 0.4;
+        }
       }
 
       .month-slide {
@@ -293,7 +297,8 @@
         top: 0;
         bottom: 0;
         width: var(--card-w);
-        opacity: 0.4;
+        /* Mobile: keep peek cards visible enough to read as "white box" */
+        opacity: 0.82;
         transition: transform 360ms cubic-bezier(0.4, 0, 0.2, 1),
                     opacity 360ms ease;
         left: calc(50% - var(--card-w) / 2);
