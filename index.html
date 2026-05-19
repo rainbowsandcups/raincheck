@@ -262,9 +262,17 @@
 
       /* Month overview — carousel */
       .month-carousel {
-        /* Mobile: card leaves ~20 px of the neighbour's white edge visible */
-        --card-w: calc(100vw - 64px);
-        --card-gap: 10px;
+        /*
+          Mobile geometry (e.g. 390 px screen):
+            card-w = 390 - 56 = 334 px
+            space each side = (390 - 334) / 2 = 28 px
+            gap between cards = 12 px
+            → adjacent card peek = 28 - 12 = 16 px of the neighbour visible
+          Slide padding-left/right = 22 px  >  16 px peek
+            → only white card background shows, zero content visible
+        */
+        --card-w: calc(100vw - 56px);
+        --card-gap: 12px;
         width: 100vw;
         height: clamp(400px, 110vw, 620px);
         flex-shrink: 0;
@@ -289,6 +297,9 @@
         }
         .month-slide {
           opacity: 0.4;
+          /* Desktop: normal padding (content can peek in, looks fine with mask) */
+          padding-left: clamp(6px, 1.2vh, 12px);
+          padding-right: clamp(6px, 1.2vh, 12px);
         }
       }
 
@@ -297,7 +308,6 @@
         top: 0;
         bottom: 0;
         width: var(--card-w);
-        /* Mobile: keep peek cards visible enough to read as "white box" */
         opacity: 0.82;
         transition: transform 360ms cubic-bezier(0.4, 0, 0.2, 1),
                     opacity 360ms ease;
@@ -309,7 +319,9 @@
         background: rgba(255, 255, 255, 0.32);
         border: 1px solid var(--border);
         border-radius: 18px;
-        padding: clamp(6px, 1.2vh, 12px);
+        /* Top/bottom from theme; left/right wider than the 16px peek so
+           no calendar content ever shows in the adjacent-card hint area */
+        padding: clamp(6px, 1.2vh, 12px) 22px;
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         display: flex;
