@@ -462,12 +462,14 @@
       }
 
       .cell.rainy {
+        /* --stripe-w is set inline per cell proportional to rain intensity */
+        --stripe-w: 3px;
         background-image: repeating-linear-gradient(
           -45deg,
           rgba(30, 64, 175, 0.6) 0px,
-          rgba(30, 64, 175, 0.6) 4px,
-          transparent 4px,
-          transparent 11px
+          rgba(30, 64, 175, 0.6) var(--stripe-w),
+          transparent var(--stripe-w),
+          transparent calc(var(--stripe-w) + 8px)
         );
       }
 
@@ -1226,8 +1228,18 @@
           if (data?.goOut === true) cell.classList.add("go");
           else if (data?.goOut === false) cell.classList.add("stay");
           if (data?.source === "climate") cell.classList.add("climate");
-          if (data?.source !== "climate" && (data?.maxRain ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD) cell.classList.add("rainy");
-          if (data?.source === "climate" && (data?.rainProbability ?? 0) >= 0.5) cell.classList.add("rainy");
+          if (data?.source !== "climate" && (data?.maxRain ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD) {
+            cell.classList.add("rainy");
+            // 2 px at threshold (0.5 mm/h), up to 8 px at ~3.5 mm/h+
+            const sw = Math.max(2, Math.min(8, Math.round(2 + (data.maxRain - RAIN_MM_PER_HOUR_THRESHOLD) * 2)));
+            cell.style.setProperty("--stripe-w", sw + "px");
+          }
+          if (data?.source === "climate" && (data?.rainProbability ?? 0) >= 0.5) {
+            cell.classList.add("rainy");
+            // 2 px at 50 % probability, up to 7 px at 100 %
+            const sw = Math.max(2, Math.min(7, Math.round(2 + (data.rainProbability - 0.5) * 10)));
+            cell.style.setProperty("--stripe-w", sw + "px");
+          }
           if (d === todayDay) cell.classList.add("today");
 
           const num = document.createElement("div");
