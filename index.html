@@ -262,17 +262,8 @@
 
       /* Month overview — carousel */
       .month-carousel {
-        /*
-          Mobile geometry (e.g. 390 px screen):
-            card-w = 390 - 56 = 334 px
-            space each side = (390 - 334) / 2 = 28 px
-            gap between cards = 12 px
-            → adjacent card peek = 28 - 12 = 16 px of the neighbour visible
-          Slide padding-left/right = 22 px  >  16 px peek
-            → only white card background shows, zero content visible
-        */
-        --card-w: calc(100vw - 56px);
-        --card-gap: 12px;
+        --card-w: calc(100vw - 32px);
+        --card-gap: 16px;
         width: 100vw;
         height: clamp(400px, 110vw, 620px);
         flex-shrink: 0;
@@ -280,26 +271,10 @@
         overflow: hidden;
       }
 
-      /* Desktop: wider peek with edge fade */
       @media (min-width: 600px) {
         .month-carousel {
           --card-w: clamp(340px, 72vw, 520px);
-          --card-gap: 16px;
           height: clamp(420px, 60vw, 620px);
-          -webkit-mask-image: linear-gradient(
-            to right, transparent 0, black 48px,
-            black calc(100% - 48px), transparent 100%
-          );
-          mask-image: linear-gradient(
-            to right, transparent 0, black 48px,
-            black calc(100% - 48px), transparent 100%
-          );
-        }
-        .month-slide {
-          opacity: 0.4;
-          /* Desktop: normal padding (content can peek in, looks fine with mask) */
-          padding-left: clamp(6px, 1.2vh, 12px);
-          padding-right: clamp(6px, 1.2vh, 12px);
         }
       }
 
@@ -308,7 +283,7 @@
         top: 0;
         bottom: 0;
         width: var(--card-w);
-        opacity: 0.82;
+        opacity: 1;
         transition: transform 360ms cubic-bezier(0.4, 0, 0.2, 1),
                     opacity 360ms ease;
         left: calc(50% - var(--card-w) / 2);
@@ -319,9 +294,7 @@
         background: rgba(255, 255, 255, 0.32);
         border: 1px solid var(--border);
         border-radius: 18px;
-        /* Top/bottom from theme; left/right wider than the 16px peek so
-           no calendar content ever shows in the adjacent-card hint area */
-        padding: clamp(6px, 1.2vh, 12px) 22px;
+        padding: clamp(6px, 1.2vh, 12px);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         display: flex;
@@ -339,18 +312,41 @@
       .month-title-bar {
         display: flex;
         align-items: center;
-        justify-content: center;
+        justify-content: space-between;
+        gap: 8px;
         margin-bottom: clamp(4px, 0.6vh, 6px);
         flex-shrink: 0;
       }
 
       .month-title {
+        flex: 1;
         font-size: 18px;
         letter-spacing: 0.18em;
         text-transform: uppercase;
         color: var(--muted);
         text-align: center;
       }
+
+      .month-nav {
+        appearance: none;
+        background: var(--card);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: clamp(28px, 3.5vh, 36px);
+        height: clamp(28px, 3.5vh, 36px);
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 20px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 120ms ease, transform 120ms ease;
+        flex-shrink: 0;
+      }
+
+      .month-nav:hover { background: rgba(255,255,255,0.65); }
+      .month-nav:active { transform: scale(0.93); }
 
       /* Floating nav arrows — pointer devices only */
       .nav-float {
@@ -573,7 +569,9 @@
       <div class="month-carousel" id="month-carousel" aria-label="Month overview">
         <div class="month-slide" id="slide-0">
           <div class="month-title-bar">
+            <button class="month-nav" data-dir="-1" type="button" aria-label="Previous month">‹</button>
             <div class="month-title" id="slide-title-0">—</div>
+            <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
           </div>
           <div class="month-grid" id="slide-grid-0"></div>
           <div class="legend">
@@ -585,7 +583,9 @@
         </div>
         <div class="month-slide" id="slide-1">
           <div class="month-title-bar">
+            <button class="month-nav" data-dir="-1" type="button" aria-label="Previous month">‹</button>
             <div class="month-title" id="slide-title-1">—</div>
+            <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
           </div>
           <div class="month-grid" id="slide-grid-1"></div>
           <div class="legend">
@@ -597,7 +597,9 @@
         </div>
         <div class="month-slide" id="slide-2">
           <div class="month-title-bar">
+            <button class="month-nav" data-dir="-1" type="button" aria-label="Previous month">‹</button>
             <div class="month-title" id="slide-title-2">—</div>
+            <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
           </div>
           <div class="month-grid" id="slide-grid-2"></div>
           <div class="legend">
@@ -1406,6 +1408,11 @@
           navigateCarousel(dx < 0 ? 1 : -1);
         }
       }, { passive: true });
+
+      // In-card prev/next arrows (all slides)
+      document.querySelectorAll(".month-nav[data-dir]").forEach((btn) => {
+        btn.addEventListener("click", () => navigateCarousel(parseInt(btn.dataset.dir)));
+      });
 
       // Floating desktop arrows
       document.getElementById("nav-float-prev").addEventListener("click", () => navigateCarousel(-1));
