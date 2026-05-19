@@ -269,6 +269,21 @@
         flex-shrink: 0;
         position: relative;
         overflow: hidden;
+        /* Fade edges so peeking cards don't look like extra calendar columns */
+        -webkit-mask-image: linear-gradient(
+          to right,
+          transparent 0px,
+          black 36px,
+          black calc(100% - 36px),
+          transparent 100%
+        );
+        mask-image: linear-gradient(
+          to right,
+          transparent 0px,
+          black 36px,
+          black calc(100% - 36px),
+          transparent 100%
+        );
       }
 
       .month-slide {
@@ -276,12 +291,14 @@
         top: 0;
         bottom: 0;
         width: var(--card-w);
+        opacity: 0.4;
+        transition: transform 360ms cubic-bezier(0.4, 0, 0.2, 1),
+                    opacity 360ms ease;
         /* Center slide, then shift by --col * (card-w + gap) */
         left: calc(50% - var(--card-w) / 2);
         transform: translateX(
           calc(var(--col, 0) * (var(--card-w) + var(--card-gap)))
         );
-        transition: transform 360ms cubic-bezier(0.4, 0, 0.2, 1);
         will-change: transform;
         background: rgba(255, 255, 255, 0.32);
         border: 1px solid var(--border);
@@ -291,6 +308,10 @@
         -webkit-backdrop-filter: blur(10px);
         display: flex;
         flex-direction: column;
+      }
+
+      .month-slide.active {
+        opacity: 1;
       }
 
       .month-slide.no-transition {
@@ -1285,6 +1306,7 @@
           slides[i].classList.remove("no-transition");
         }
         slides[i].style.setProperty("--col", col);
+        slides[i].classList.toggle("active", col === 0);
       }
 
       function offsetMonthBy(year, month0, delta) {
