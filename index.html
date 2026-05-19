@@ -462,14 +462,16 @@
       }
 
       .cell.rainy {
-        /* --stripe-w is set inline per cell proportional to rain intensity */
+        /* --stripe-w set per cell in JS (2–8 px).
+           Gap = max(2px, 10px - stripe) → shrinks as rain gets heavier,
+           minimum 2 px → at max rain: 8px stripe + 2px gap = very dense */
         --stripe-w: 3px;
         background-image: repeating-linear-gradient(
           -45deg,
           rgba(30, 64, 175, 0.6) 0px,
           rgba(30, 64, 175, 0.6) var(--stripe-w),
           transparent var(--stripe-w),
-          transparent calc(var(--stripe-w) + 8px)
+          transparent calc(var(--stripe-w) + max(2px, 10px - var(--stripe-w)))
         );
       }
 
