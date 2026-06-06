@@ -256,6 +256,32 @@
         color: #7c3aed;
       }
 
+      .sauna .brand-group {
+        margin-top: 14px;
+      }
+      .sauna .brand-group:first-of-type {
+        margin-top: 0;
+      }
+
+      .sauna .brand-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        opacity: 0.8;
+        margin-bottom: 7px;
+      }
+
+      .sauna .studio-dist {
+        margin-left: auto;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+      }
+
       /* Ferien pane — full-year vacation planner */
       .ferien {
         width: min(560px, 100%);
@@ -2156,37 +2182,62 @@
       // ─────────────────────────────────────────────────────────────────────
       const SAUNA_LOCATIONS = [
         // Fitnesspark — immer Frauen, heiss rotiert
-        { name: "Glattpark",   url: "https://www.fitnesspark.ch/fitnessparks/zuerich-glattpark/saunalandschaft-exklusiv-fuer-frauen/",   hot: [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
-        { name: "Stadelhofen", url: "https://www.fitnesspark.ch/fitnessparks/zuerich-stadelhofen/saunalandschaft-exklusiv-fuer-frauen/", hot: [0,1,1,0,1,0,1], women: [1,1,1,1,1,1,1] },
-        { name: "Puls 5",      url: "https://www.fitnesspark.ch/fitnessparks/puls-5-zuerich/saunalandschaft-exklusiv-fuer-frauen/",      hot: [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
+        { name: "Glattpark",   brand: "Fitnesspark", lat: 47.4267, lng: 8.5640, url: "https://www.fitnesspark.ch/fitnessparks/zuerich-glattpark/saunalandschaft-exklusiv-fuer-frauen/",   hot: [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
+        { name: "Stadelhofen", brand: "Fitnesspark", lat: 47.3668, lng: 8.5475, url: "https://www.fitnesspark.ch/fitnessparks/zuerich-stadelhofen/saunalandschaft-exklusiv-fuer-frauen/", hot: [0,1,1,0,1,0,1], women: [1,1,1,1,1,1,1] },
+        { name: "Puls 5",      brand: "Fitnesspark", lat: 47.3893, lng: 8.5175, url: "https://www.fitnesspark.ch/fitnessparks/puls-5-zuerich/saunalandschaft-exklusiv-fuer-frauen/",      hot: [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
         // Activ Fitness — Frauentag
-        { name: "Altstetten",  url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-altstetten/",  hot: [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
-        { name: "Kreuzplatz",  url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-kreuzplatz/",  hot: [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
-        { name: "Stauffacher", url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-stauffacher/", hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
-        { name: "Oerlikon",    url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-oerlikon/",    hot: [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
-        { name: "Wiedikon",    url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-wiedikon/",    hot: [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
+        { name: "Altstetten",  brand: "Active Fitness", lat: 47.3905, lng: 8.4885, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-altstetten/",  hot: [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
+        { name: "Kreuzplatz",  brand: "Active Fitness", lat: 47.3642, lng: 8.5527, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-kreuzplatz/",  hot: [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
+        { name: "Stauffacher", brand: "Active Fitness", lat: 47.3739, lng: 8.5288, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-stauffacher/", hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Oerlikon",    brand: "Active Fitness", lat: 47.4108, lng: 8.5470, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-oerlikon/",    hot: [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
+        { name: "Wiedikon",    brand: "Active Fitness", lat: 47.3690, lng: 8.5145, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-wiedikon/",    hot: [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
         // Activ Fitness — getrennte Kabinen
-        { name: "Central",       url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-central/",       hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
-        { name: "Forum",         url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-forum/",         hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
-        { name: "Langstrasse",   url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-langstrasse/",   hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
-        { name: "Tiefenbrunnen", url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-tiefenbrunnen/", hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
-        { name: "Wipkingen",     url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-wipkingen/",     hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Central",       brand: "Active Fitness", lat: 47.3768, lng: 8.5430, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-central/",       hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Forum",         brand: "Active Fitness", lat: 47.3770, lng: 8.5340, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-forum/",         hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Langstrasse",   brand: "Active Fitness", lat: 47.3782, lng: 8.5305, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-langstrasse/",   hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Tiefenbrunnen", brand: "Active Fitness", lat: 47.3545, lng: 8.5565, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-tiefenbrunnen/", hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Wipkingen",     brand: "Active Fitness", lat: 47.3950, lng: 8.5260, url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-wipkingen/",     hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
       ];
+      const SAUNA_BRANDS = ["Fitnesspark", "Active Fitness"];
       const SAUNA_DAY_NAMES = [
         "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag",
       ];
 
+      let saunaPos = null;       // { lat, lng } sobald GPS verfügbar
+      let saunaGeoAsked = false; // Standortabfrage nur einmal auslösen
+
+      // Distanz Luftlinie in km (Haversine)
+      function saunaDistKm(a, b) {
+        const R = 6371, toRad = (d) => (d * Math.PI) / 180;
+        const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+        const s =
+          Math.sin(dLat / 2) ** 2 +
+          Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+        return R * 2 * Math.asin(Math.sqrt(s));
+      }
+
       function renderSauna() {
+        // Standort einmalig anfragen; bei Erfolg neu rendern
+        if (!saunaGeoAsked && navigator.geolocation) {
+          saunaGeoAsked = true;
+          navigator.geolocation.getCurrentPosition(
+            (pos) => {
+              saunaPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+              renderSauna();
+            },
+            () => {}, // Freigabe verweigert → bisherige Reihenfolge bleibt
+            { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 },
+          );
+        }
+
         const container = document.getElementById("sauna-content");
         container.innerHTML = "";
         const todayIso = (new Date().getDay() + 6) % 7; // Mo=0..So=6
         for (let offset = 0; offset < 7; offset++) {
           const iso = (todayIso + offset) % 7;
           const isToday = offset === 0;
-          const studios = SAUNA_LOCATIONS.filter(
-            (l) => l.hot[iso] && l.women[iso],
-          );
-          if (studios.length === 0) continue;
+          const open = SAUNA_LOCATIONS.filter((l) => l.hot[iso] && l.women[iso]);
+          if (open.length === 0) continue;
           const block = document.createElement("div");
           block.className = "day-block" + (isToday ? " today" : "");
           const label = document.createElement("div");
@@ -2195,23 +2246,47 @@
             ? `Heute · ${SAUNA_DAY_NAMES[iso]}`
             : SAUNA_DAY_NAMES[iso];
           block.appendChild(label);
-          const list = document.createElement("div");
-          list.className = "studios";
-          for (const loc of studios) {
-            const studio = document.createElement("div");
-            studio.className = "studio";
-            const dot = document.createElement("span");
-            dot.className = "studio-dot";
-            studio.appendChild(dot);
-            const a = document.createElement("a");
-            a.href = loc.url;
-            a.target = "_blank";
-            a.rel = "noopener";
-            a.textContent = loc.name;
-            studio.appendChild(a);
-            list.appendChild(studio);
+
+          for (const brand of SAUNA_BRANDS) {
+            const studios = open.filter((l) => l.brand === brand);
+            if (studios.length === 0) continue;
+            if (saunaPos) {
+              for (const l of studios) l._dist = saunaDistKm(saunaPos, l);
+              studios.sort((a, b) => a._dist - b._dist);
+            }
+
+            const group = document.createElement("div");
+            group.className = "brand-group";
+            const brandLabel = document.createElement("div");
+            brandLabel.className = "brand-label";
+            brandLabel.textContent = brand;
+            group.appendChild(brandLabel);
+
+            const list = document.createElement("div");
+            list.className = "studios";
+            for (const loc of studios) {
+              const studio = document.createElement("div");
+              studio.className = "studio";
+              const dot = document.createElement("span");
+              dot.className = "studio-dot";
+              studio.appendChild(dot);
+              const a = document.createElement("a");
+              a.href = loc.url;
+              a.target = "_blank";
+              a.rel = "noopener";
+              a.textContent = loc.name;
+              studio.appendChild(a);
+              if (saunaPos) {
+                const dist = document.createElement("span");
+                dist.className = "studio-dist";
+                dist.textContent = `${loc._dist.toFixed(1)} km`;
+                studio.appendChild(dist);
+              }
+              list.appendChild(studio);
+            }
+            group.appendChild(list);
+            block.appendChild(group);
           }
-          block.appendChild(list);
           container.appendChild(block);
         }
       }
