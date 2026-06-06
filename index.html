@@ -283,6 +283,42 @@
         flex-shrink: 0;
       }
 
+      .sauna-geo-btn {
+        align-self: center;
+        margin: 0 0 4px;
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        color: var(--text);
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 8px 16px;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: background-color 150ms ease, opacity 150ms ease;
+      }
+      .sauna-geo-btn:hover {
+        background: rgba(255, 255, 255, 0.65);
+      }
+      .sauna-geo-btn:disabled {
+        cursor: default;
+        opacity: 0.65;
+      }
+      .sauna-geo-btn.located {
+        cursor: default;
+        color: var(--muted);
+        background: transparent;
+        border-color: transparent;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+      .sauna-geo-btn.error {
+        color: #b91c1c;
+      }
+
       /* Ferien pane — full-year vacation planner */
       .ferien {
         width: min(560px, 100%);
@@ -1039,6 +1075,9 @@
       <div class="tab-pane hidden" id="tab-sauna">
         <section class="sauna">
           <h2>Sauna · heiss & für Frauen</h2>
+          <button id="sauna-geo-btn" class="sauna-geo-btn" type="button">
+            📍 In meiner Nähe sortieren
+          </button>
           <div id="sauna-content"></div>
         </section>
       </div>
@@ -2205,8 +2244,8 @@
         "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag",
       ];
 
-      let saunaPos = null;       // { lat, lng } sobald GPS verfügbar
-      let saunaGeoAsked = false; // Standortabfrage nur einmal auslösen
+      let saunaPos = null;          // { lat, lng } sobald GPS verfügbar
+      let saunaGeoAutoTried = false; // Auto-Versuch nur einmal beim ersten Render
 
       // Distanz Luftlinie in km (Haversine)
       function saunaDistKm(a, b) {
@@ -2218,18 +2257,51 @@
         return R * 2 * Math.asin(Math.sqrt(s));
       }
 
+      // Standort anfordern. fromUser=true (Button-Tap) ist der zuverlässige Weg,
+      // da Privacy-Browser wie Brave die automatische Abfrage oft still blocken.
+      function requestSaunaLocation(fromUser) {
+        const btn = document.getElementById("sauna-geo-btn");
+        const setBtn = (text, cls, disabled) => {
+          if (!btn) return;
+          btn.textContent = text;
+          btn.className = "sauna-geo-btn" + (cls ? " " + cls : "");
+          btn.disabled = !!disabled;
+        };
+        if (!navigator.geolocation) {
+          setBtn("Standort wird nicht unterstützt", "error", true);
+          return;
+        }
+        setBtn("📍 Standort wird ermittelt …", "", true);
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            saunaPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            setBtn("📍 Nach Distanz zu dir sortiert", "located", true);
+            renderSauna();
+          },
+          (err) => {
+            const denied = err && err.code === 1; // PERMISSION_DENIED
+            // Bei stillem Auto-Fehlschlag den Button neutral lassen (zum Antippen)
+            if (!fromUser && !denied) {
+              setBtn("📍 In meiner Nähe sortieren", "", false);
+              return;
+            }
+            setBtn(
+              denied
+                ? "📍 Standort blockiert – tippen & erlauben"
+                : "📍 Standort nicht verfügbar – erneut versuchen",
+              "error",
+              false,
+            );
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 },
+        );
+      }
+
       function renderSauna() {
-        // Standort einmalig anfragen; bei Erfolg neu rendern
-        if (!saunaGeoAsked && navigator.geolocation) {
-          saunaGeoAsked = true;
-          navigator.geolocation.getCurrentPosition(
-            (pos) => {
-              saunaPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-              renderSauna();
-            },
-            () => {}, // Freigabe verweigert → bisherige Reihenfolge bleibt
-            { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 },
-          );
+        // Beim ersten Render automatisch versuchen (Browser, die es erlauben)
+        if (!saunaGeoAutoTried) {
+          saunaGeoAutoTried = true;
+          requestSaunaLocation(false);
         }
 
         const container = document.getElementById("sauna-content");
@@ -2292,6 +2364,10 @@
           container.appendChild(block);
         }
       }
+
+      document
+        .getElementById("sauna-geo-btn")
+        .addEventListener("click", () => requestSaunaLocation(true));
 
       // ─────────────────────────────────────────────────────────────────────
       // Ferien pane — full-year vacation picker, max 25 weekday selections
