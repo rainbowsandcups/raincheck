@@ -61,6 +61,21 @@
         );
       }
 
+      /* Ferien tab — Instagram-style gradient, overrides go/stay.
+         Fixed to the viewport so the full gradient shows regardless of
+         how tall the year scroll gets. */
+      body.ferien-bg {
+        background: radial-gradient(
+          circle at 30% 107%,
+          #fdf497 0%,
+          #fdf497 5%,
+          #fd5949 45%,
+          #d6249f 60%,
+          #285aeb 90%
+        );
+        background-attachment: fixed;
+      }
+
       main {
         display: flex;
         flex-direction: column;
@@ -114,6 +129,329 @@
         text-transform: none;
         letter-spacing: 0;
         font-size: 18px;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .tabs button {
+        appearance: none;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+        font: inherit;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 6px 14px;
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: background 150ms, color 150ms;
+      }
+
+      .tabs button:hover {
+        background: rgba(255, 255, 255, 0.55);
+        color: var(--text);
+      }
+
+      .tabs button.active {
+        background: rgba(255, 255, 255, 0.75);
+        color: var(--text);
+      }
+
+      .tab-pane {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: clamp(10px, 1.8vh, 24px);
+        width: 100%;
+      }
+
+      .tab-pane.hidden {
+        display: none;
+      }
+
+      /* Sauna pane — ported from sauna.html, themed for the light gradient */
+      .sauna {
+        width: min(480px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .sauna h2 {
+        margin: 0 0 6px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .sauna .day-block {
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 14px 16px;
+      }
+
+      .sauna .day-block.today {
+        background: rgba(255, 255, 255, 0.6);
+        border-color: rgba(255, 255, 255, 0.85);
+      }
+
+      .sauna .day-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .sauna .day-block.today .day-label {
+        color: #7c3aed;
+      }
+
+      .sauna .studios {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .sauna .studio {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .sauna .studio-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #8b5cf6;
+        flex-shrink: 0;
+        box-shadow: 0 0 5px rgba(139, 92, 246, 0.45);
+      }
+
+      .sauna .studio a {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+        text-decoration: none;
+        transition: color 150ms;
+      }
+
+      .sauna .studio a:hover {
+        color: #7c3aed;
+      }
+
+      /* Ferien pane — full-year vacation planner */
+      .ferien {
+        width: min(560px, 100%);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .ferien-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 16px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        position: sticky;
+        top: 0;
+        z-index: 5;
+      }
+
+      .ferien-header h2 {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+
+      .ferien-counter {
+        font-weight: 700;
+        font-size: 14px;
+      }
+
+      .ferien-counter.full {
+        color: #b91c1c;
+      }
+
+      .ferien-year-nav {
+        appearance: none;
+        background: rgba(255, 255, 255, 0.4);
+        border: 1px solid var(--border);
+        color: var(--text);
+        width: 30px;
+        height: 30px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 16px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 120ms, transform 120ms;
+        flex-shrink: 0;
+      }
+
+      .ferien-year-nav:hover {
+        background: rgba(255, 255, 255, 0.65);
+      }
+
+      .ferien-year-nav:active {
+        transform: scale(0.95);
+      }
+
+      .ferien-year {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .ferien-month {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 14px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      .ferien-month-title {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .ferien-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+
+      .ferien-grid .weekday {
+        font-size: 10px;
+        font-weight: 600;
+        color: var(--muted);
+        text-align: center;
+        padding: 2px 0 4px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .ferien-cell {
+        appearance: none;
+        aspect-ratio: 1;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.45);
+        border: 1px solid rgba(255, 255, 255, 0.55);
+        color: var(--text);
+        cursor: pointer;
+        transition: background 100ms, transform 100ms;
+        padding: 0;
+        font-family: inherit;
+      }
+
+      .ferien-cell.empty {
+        background: transparent;
+        border: none;
+        cursor: default;
+        pointer-events: none;
+      }
+
+      .ferien-cell.disabled {
+        background: rgba(15, 23, 42, 0.07);
+        color: rgba(15, 23, 42, 0.35);
+        border-color: rgba(15, 23, 42, 0.08);
+        cursor: not-allowed;
+      }
+
+      .ferien-cell.holiday {
+        background: rgba(15, 23, 42, 0.07);
+        color: rgba(15, 23, 42, 0.4);
+        border-color: rgba(15, 23, 42, 0.1);
+        cursor: not-allowed;
+        position: relative;
+      }
+
+      .ferien-cell.holiday::after {
+        content: "";
+        position: absolute;
+        bottom: 3px;
+        right: 3px;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #9ca3af;
+      }
+
+      .ferien-cell.selected {
+        background: #facc15;
+        color: #0f172a;
+        border-color: #ca8a04;
+      }
+
+      .ferien-cell.today:not(.selected) {
+        outline: 2px solid #0f172a;
+        outline-offset: 1px;
+      }
+
+      .ferien-cell.past {
+        background: rgba(15, 23, 42, 0.04);
+        color: rgba(15, 23, 42, 0.25);
+        border-color: rgba(15, 23, 42, 0.05);
+        cursor: not-allowed;
+      }
+
+      .ferien-cell:hover:not(.disabled):not(.holiday):not(.empty):not(.selected) {
+        background: rgba(255, 255, 255, 0.75);
+      }
+
+      .ferien-cell.shake {
+        animation: shake 220ms ease;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-3px);
+        }
+        75% {
+          transform: translateX(3px);
+        }
       }
 
       .icon {
@@ -348,6 +686,39 @@
       .month-nav:hover { background: rgba(255,255,255,0.65); }
       .month-nav:active { transform: scale(0.93); }
 
+      .month-title-right {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+
+      .days-toggle {
+        appearance: none;
+        background: var(--card);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        height: clamp(28px, 3.5vh, 36px);
+        padding: 0 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        transition: background 120ms ease;
+        flex-shrink: 0;
+      }
+      .days-toggle:hover  { background: rgba(255,255,255,0.65); }
+      .days-toggle:active { transform: scale(0.93); }
+      .days-toggle.on {
+        background: rgba(255,255,255,0.55);
+        color: var(--text);
+        border-color: rgba(255,255,255,0.9);
+      }
+
       /* Floating nav arrows — pointer devices only */
       .nav-float {
         display: none;
@@ -545,11 +916,20 @@
   </head>
   <body>
     <main>
-      <select
-        class="location"
-        id="location"
-        aria-label="Choose location"
-      ></select>
+      <nav class="tabs" id="tabs">
+        <button type="button" class="active" data-tab="raincheck">
+          Raincheck
+        </button>
+        <button type="button" data-tab="sauna">Sauna</button>
+        <button type="button" data-tab="ferien">Ferien</button>
+      </nav>
+
+      <div class="tab-pane" id="tab-raincheck">
+        <select
+          class="location"
+          id="location"
+          aria-label="Choose location"
+        ></select>
       <div class="icon" id="icon" aria-hidden="true"></div>
       <h1 class="verdict" id="verdict">Loading…</h1>
       <div class="reason" id="reason">Fetching current conditions</div>
@@ -575,7 +955,10 @@
           <div class="month-title-bar">
             <button class="month-nav" data-dir="-1" type="button" aria-label="Previous month">‹</button>
             <div class="month-title" id="slide-title-0">—</div>
-            <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
+            <div class="month-title-right">
+              <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
+              <button class="days-toggle" type="button" aria-label="Toggle day range">7d</button>
+            </div>
           </div>
           <div class="month-grid" id="slide-grid-0"></div>
           <div class="legend">
@@ -589,7 +972,10 @@
           <div class="month-title-bar">
             <button class="month-nav" data-dir="-1" type="button" aria-label="Previous month">‹</button>
             <div class="month-title" id="slide-title-1">—</div>
-            <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
+            <div class="month-title-right">
+              <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
+              <button class="days-toggle" type="button" aria-label="Toggle day range">7d</button>
+            </div>
           </div>
           <div class="month-grid" id="slide-grid-1"></div>
           <div class="legend">
@@ -603,7 +989,10 @@
           <div class="month-title-bar">
             <button class="month-nav" data-dir="-1" type="button" aria-label="Previous month">‹</button>
             <div class="month-title" id="slide-title-2">—</div>
-            <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
+            <div class="month-title-right">
+              <button class="month-nav" data-dir="1" type="button" aria-label="Next month">›</button>
+              <button class="days-toggle" type="button" aria-label="Toggle day range">7d</button>
+            </div>
           </div>
           <div class="month-grid" id="slide-grid-2"></div>
           <div class="legend">
@@ -617,6 +1006,45 @@
 
       <button class="refresh" id="refresh" type="button">Refresh</button>
       <footer id="updated">—</footer>
+      </div>
+      <!-- /#tab-raincheck -->
+
+      <div class="tab-pane hidden" id="tab-sauna">
+        <section class="sauna">
+          <h2>Sauna · heiss & für Frauen</h2>
+          <div id="sauna-content"></div>
+        </section>
+      </div>
+
+      <div class="tab-pane hidden" id="tab-ferien">
+        <section class="ferien">
+          <div class="ferien-header">
+            <button
+              type="button"
+              class="ferien-year-nav"
+              id="ferien-year-prev"
+              aria-label="Previous year"
+            >
+              ‹
+            </button>
+            <h2>
+              <span id="ferien-year-label">2026</span> ·
+              <span class="ferien-counter" id="ferien-counter">
+                <span id="ferien-count">0</span>/25
+              </span>
+            </h2>
+            <button
+              type="button"
+              class="ferien-year-nav"
+              id="ferien-year-next"
+              aria-label="Next year"
+            >
+              ›
+            </button>
+          </div>
+          <div class="ferien-year" id="ferien-year"></div>
+        </section>
+      </div>
     </main>
 
     <button class="nav-float nav-float-prev" id="nav-float-prev" type="button" aria-label="Previous month">‹</button>
@@ -669,6 +1097,7 @@
       }
 
       const TEMP_THRESHOLD_C = 16;
+      const TEMP_RAIN_OK_C = 22; // > this, rain in the 8–19 window is fine
       const RAIN_MM_PER_HOUR_THRESHOLD = 0.5; // > this in any hour 8–18 counts as "actual rain"
       const DAYTIME_START_HOUR = 8; // inclusive
       const DAYTIME_END_HOUR = 19; // exclusive — so hours 8..18 are checked
@@ -740,9 +1169,12 @@
 
       function dayVerdict(tmax, maxDaytimeRainMm) {
         if (tmax == null) return null;
-        const warm = tmax >= TEMP_THRESHOLD_C;
-        const dry = (maxDaytimeRainMm ?? 0) < RAIN_MM_PER_HOUR_THRESHOLD;
-        return warm && dry;
+        if (tmax < TEMP_THRESHOLD_C) return false;
+        const rainy = (maxDaytimeRainMm ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD;
+        if (!rainy) return true;
+        // Rain in the daytime window — only OK if it's warm enough that
+        // getting a bit wet doesn't matter.
+        return tmax > TEMP_RAIN_OK_C;
       }
 
       // ─────────────────────────────────────────────────────────────────────
@@ -895,8 +1327,11 @@
         const reasons = [];
         if (tmaxToday != null && tmaxToday < TEMP_THRESHOLD_C) {
           reasons.push(`max only ${Math.round(tmaxToday)}°C today`);
-        }
-        if ((maxRainToday ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD) {
+        } else if (
+          (maxRainToday ?? 0) >= RAIN_MM_PER_HOUR_THRESHOLD &&
+          tmaxToday != null &&
+          tmaxToday <= TEMP_RAIN_OK_C
+        ) {
           reasons.push("rain expected between 8 and 19");
         }
         els.reason.textContent = goOut
@@ -954,6 +1389,18 @@
         return (date.getDay() + 6) % 7;
       }
 
+      // 10-second per-fetch timeout so a hung connection can't stall the
+      // whole month's Promise.all forever.
+      async function fetchWithTimeout(url, ms = 10000) {
+        const ctrl = new AbortController();
+        const id = setTimeout(() => ctrl.abort(), ms);
+        try {
+          return await fetch(url, { signal: ctrl.signal });
+        } finally {
+          clearTimeout(id);
+        }
+      }
+
       async function fetchForecastRange(pastDays, forecastDays) {
         const loc = currentLocation();
         const url =
@@ -964,7 +1411,7 @@
           `&timezone=auto` +
           `&past_days=${pastDays}` +
           `&forecast_days=${forecastDays}`;
-        const res = await fetch(url);
+        const res = await fetchWithTimeout(url);
         if (!res.ok) throw new Error(`Forecast range HTTP ${res.status}`);
         return res.json();
       }
@@ -980,7 +1427,7 @@
           `&daily=temperature_2m_max` +
           `&hourly=rain` +
           `&timezone=auto`;
-        const res = await fetch(url);
+        const res = await fetchWithTimeout(url);
         if (!res.ok) throw new Error(`Archive HTTP ${res.status}`);
         return res.json();
       }
@@ -990,10 +1437,41 @@
         const years = [];
         for (let y = year - yearsBack; y < year; y++) years.push(y);
 
-        try {
-          const archives = await Promise.all(
-            years.map((y) => fetchArchiveYear(y, month0, fromDay, toDay)),
+        // Fetch sequentially. Browsers cap concurrent connections per host
+        // (~6 in Chrome/Safari). With 3 carousel slots each kicking off 5
+        // climate fetches in parallel that's 15 in flight — some get queued
+        // for so long that our per-fetch watchdog aborts them. Going serial
+        // here means at most one archive request per month is in flight at
+        // a time. Still ~600 ms for all 5 years, well below the 20 s slot
+        // watchdog.
+        const archives = [];
+        let failures = 0;
+        for (const y of years) {
+          try {
+            const data = await fetchArchiveYear(y, month0, fromDay, toDay);
+            archives.push(data);
+          } catch (err) {
+            failures++;
+            console.warn(`[climate] ${y}-${pad2(month0 + 1)} failed:`, err);
+          }
+        }
+        if (archives.length === 0) {
+          for (let d = fromDay; d <= toDay; d++) {
+            if (!days[d])
+              days[d] = { day: d, source: "climate", goOut: null };
+          }
+          console.warn(
+            `[climate] all ${years.length} archive fetches failed for ${year}-${pad2(month0 + 1)}`,
           );
+          return;
+        }
+        if (failures > 0) {
+          console.log(
+            `[climate] ${archives.length}/${years.length} archives succeeded for ${year}-${pad2(month0 + 1)}`,
+          );
+        }
+
+        try {
 
           for (let d = fromDay; d <= toDay; d++) {
             let go = 0;
@@ -1063,28 +1541,58 @@
         const isPastMonth = targetKey < todayKey;
 
         if (isCurrentMonth) {
-          // Real + forecast in one call; climate for tail
-          const pastDays = Math.max(0, todayD - 1);
+          // Past days from the archive endpoint (forecast's past_days
+          // returns nulls for days older than ~20). Today + 16 days from
+          // forecast. Both in parallel.
           const forecastDays = 16;
-          const fc = await fetchForecastRange(pastDays, forecastDays);
-          for (let i = 0; i < fc.daily.time.length; i++) {
-            const [yy, mm, dd] = fc.daily.time[i].split("-").map(Number);
-            if (yy !== targetYear || mm - 1 !== targetMonth0) continue;
-            const tmax = fc.daily.temperature_2m_max[i];
-            const maxRain = maxDaytimeRainForDay(
-              fc.hourly,
-              targetYear,
-              targetMonth0,
-              dd,
+          const fetches = [];
+          if (todayD > 1) {
+            fetches.push(
+              fetchArchiveYear(targetYear, targetMonth0, 1, todayD - 1)
+                .then((data) => ({ kind: "archive", data }))
+                .catch((err) => {
+                  console.warn("Archive (current month past) failed:", err);
+                  return null;
+                }),
             );
-            days[dd] = {
-              day: dd,
-              tmax,
-              maxRain,
-              goOut: dayVerdict(tmax, maxRain),
-              source: dd < todayD ? "history" : "forecast",
-            };
           }
+          fetches.push(
+            fetchForecastRange(0, forecastDays).then((data) => ({
+              kind: "forecast",
+              data,
+            })),
+          );
+          const results = await Promise.all(fetches);
+
+          for (const r of results) {
+            if (!r) continue;
+            const { kind, data } = r;
+            for (let i = 0; i < data.daily.time.length; i++) {
+              const [yy, mm, dd] = data.daily.time[i].split("-").map(Number);
+              if (yy !== targetYear || mm - 1 !== targetMonth0) continue;
+              const tmax = data.daily.temperature_2m_max[i];
+              if (tmax == null) continue;
+              const maxRain = maxDaytimeRainForDay(
+                data.hourly,
+                targetYear,
+                targetMonth0,
+                dd,
+              );
+              days[dd] = {
+                day: dd,
+                tmax,
+                maxRain,
+                goOut: dayVerdict(tmax, maxRain),
+                source:
+                  kind === "archive"
+                    ? "history"
+                    : dd < todayD
+                      ? "history"
+                      : "forecast",
+              };
+            }
+          }
+
           const lastCoveredDay = todayD + forecastDays - 1;
           if (lastCoveredDay + 1 <= totalDays) {
             await populateClimate(
@@ -1204,12 +1712,16 @@
       ];
       const WEEKDAY_SHORT = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
+      const WEEKDAY_4 = ["Mon", "Tue", "Wed", "Thu"];
+
       function renderMonth(monthData, titleEl, gridEl) {
         const { year, month0, totalDays, todayDay, days } = monthData;
         titleEl.textContent = `${MONTH_NAMES[month0]} ${year}`;
         gridEl.innerHTML = "";
 
-        for (const w of WEEKDAY_SHORT) {
+        const headers = fourDayMode ? WEEKDAY_4 : WEEKDAY_SHORT;
+        gridEl.style.gridTemplateColumns = fourDayMode ? "repeat(4,1fr)" : "repeat(7,1fr)";
+        for (const w of headers) {
           const h = document.createElement("div");
           h.className = "weekday";
           h.textContent = w;
@@ -1217,13 +1729,17 @@
         }
 
         const firstWd = isoWeekday(new Date(year, month0, 1));
-        for (let i = 0; i < firstWd; i++) {
+        // In 4-day mode: offset = Mon(0)/Tue(1)/Wed(2)/Thu(3), Fri-Sun → 0 (skip those days entirely)
+        const offset = fourDayMode ? (firstWd < 4 ? firstWd : 0) : firstWd;
+        for (let i = 0; i < offset; i++) {
           const c = document.createElement("div");
           c.className = "cell empty";
           gridEl.appendChild(c);
         }
 
         for (let d = 1; d <= totalDays; d++) {
+          // In 4-day mode, skip Fri (4), Sat (5), Sun (6)
+          if (fourDayMode && isoWeekday(new Date(year, month0, d)) >= 4) continue;
           const data = days[d];
           const cell = document.createElement("div");
           cell.className = "cell";
@@ -1284,20 +1800,24 @@
       function renderMonthPlaceholder(year, month0, titleEl, gridEl) {
         titleEl.textContent = `${MONTH_NAMES[month0]} ${year}`;
         gridEl.innerHTML = "";
-        for (const w of WEEKDAY_SHORT) {
+        const headers = fourDayMode ? WEEKDAY_4 : WEEKDAY_SHORT;
+        gridEl.style.gridTemplateColumns = fourDayMode ? "repeat(4,1fr)" : "repeat(7,1fr)";
+        for (const w of headers) {
           const h = document.createElement("div");
           h.className = "weekday";
           h.textContent = w;
           gridEl.appendChild(h);
         }
         const firstWd = isoWeekday(new Date(year, month0, 1));
-        for (let i = 0; i < firstWd; i++) {
+        const offset = fourDayMode ? (firstWd < 4 ? firstWd : 0) : firstWd;
+        for (let i = 0; i < offset; i++) {
           const c = document.createElement("div");
           c.className = "cell empty";
           gridEl.appendChild(c);
         }
         const total = daysInMonth(year, month0);
         for (let d = 1; d <= total; d++) {
+          if (fourDayMode && isoWeekday(new Date(year, month0, d)) >= 4) continue;
           const cell = document.createElement("div");
           cell.className = "cell loading";
           const num = document.createElement("div");
@@ -1332,6 +1852,15 @@
       // Per-slot fetch tokens — discard results from superseded requests
       const slotTokens = [0, 0, 0];
 
+      // 4-day work-week toggle (Mon–Thu only). Default ON.
+      let fourDayMode = localStorage.getItem('raincheck-4day') !== 'false';
+      // Cached month data per slot so we can re-render without re-fetching
+      const slotData = [null, null, null];
+      // Cache by year-month key so re-navigating to a month skips the fetch.
+      // The current month is excluded from cache reads (always re-fetched on
+      // explicit refresh) but past/future months are stable for the session.
+      const monthCache = new Map();
+
       function setSlidePos(i, col, animated) {
         if (!animated) {
           slides[i].classList.add("no-transition");
@@ -1352,18 +1881,100 @@
 
       async function loadSlide(slotIdx, year, month0) {
         const token = ++slotTokens[slotIdx];
+        const tag = `slot${slotIdx} ${year}-${pad2(month0 + 1)}`;
+        const cacheKey = `${year}-${month0}`;
+        const now = new Date();
+        const isCurrent =
+          year === now.getFullYear() && month0 === now.getMonth();
+
+        // Use cached month data when available (except for the current month,
+        // which we always want fresh so today's forecast stays accurate).
+        if (!isCurrent && monthCache.has(cacheKey)) {
+          const cached = monthCache.get(cacheKey);
+          slotData[slotIdx] = cached;
+          renderMonth(cached, slideTitles[slotIdx], slideGrids[slotIdx]);
+          console.log(`[carousel] ${tag} from cache`);
+          return;
+        }
+
+        slotData[slotIdx] = null; // clear stale cache while loading
         renderMonthPlaceholder(year, month0, slideTitles[slotIdx], slideGrids[slotIdx]);
+        console.log(`[carousel] ${tag} loading (token ${token})`);
+
+        // Watchdog: if buildMonthData hangs longer than this, surface the
+        // problem instead of leaving the user staring at a loading skeleton.
+        const WATCHDOG_MS = 20000;
+        let watchdogId;
+        const watchdog = new Promise((_, reject) => {
+          watchdogId = setTimeout(
+            () =>
+              reject(
+                new Error(`timeout after ${WATCHDOG_MS / 1000}s loading data`),
+              ),
+            WATCHDOG_MS,
+          );
+        });
+
         try {
-          const data = await buildMonthData(year, month0);
-          if (slotTokens[slotIdx] !== token) return;
+          const data = await Promise.race([
+            buildMonthData(year, month0),
+            watchdog,
+          ]);
+          clearTimeout(watchdogId);
+          if (slotTokens[slotIdx] !== token) {
+            console.log(`[carousel] ${tag} stale, discarding`);
+            return;
+          }
+          slotData[slotIdx] = data;
+          monthCache.set(cacheKey, data);
           renderMonth(data, slideTitles[slotIdx], slideGrids[slotIdx]);
+          console.log(`[carousel] ${tag} rendered`);
         } catch (err) {
+          clearTimeout(watchdogId);
           if (slotTokens[slotIdx] !== token) return;
-          console.error("Slide load failed:", err);
+          console.error(`[carousel] ${tag} failed:`, err);
           slideGrids[slotIdx].innerHTML =
-            `<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:18px;padding:12px;">Couldn't load: ${err.message}</div>`;
+            `<div style="grid-column:1/-1;text-align:center;color:#0f172a;font-size:14px;padding:24px;background:rgba(255,255,255,0.6);border-radius:12px;margin:8px;">⚠️ Couldn't load: ${err.message}<br><button type="button" id="retry-slot-${slotIdx}" style="margin-top:12px;appearance:none;background:rgba(255,255,255,0.8);border:1px solid rgba(15,23,42,0.2);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;font-weight:600;color:#0f172a;cursor:pointer;">Retry</button></div>`;
+          const retry = document.getElementById(`retry-slot-${slotIdx}`);
+          if (retry) {
+            retry.addEventListener("click", () =>
+              loadSlide(slotIdx, year, month0),
+            );
+          }
         }
       }
+
+      function updateToggleLabels() {
+        // When in 4-day mode the button offers to expand → "7d"
+        // When in 7-day mode the button offers to collapse → "4d"
+        const label = fourDayMode ? "7d" : "4d";
+        document.querySelectorAll(".days-toggle").forEach((btn) => {
+          btn.textContent = label;
+          // Highlight button when we're showing the full 7-day view
+          btn.classList.toggle("on", !fourDayMode);
+        });
+      }
+
+      function toggleDayMode() {
+        fourDayMode = !fourDayMode;
+        localStorage.setItem('raincheck-4day', fourDayMode ? 'true' : 'false');
+        updateToggleLabels();
+        // Re-render all slots from cache (instant — no network call)
+        for (let i = 0; i < 3; i++) {
+          if (slotData[i]) {
+            renderMonth(slotData[i], slideTitles[i], slideGrids[i]);
+          } else {
+            // Data still loading — placeholder will re-render correctly when it arrives
+            const { year, month0 } = offsetMonthBy(carouselYear, carouselMonth0, slotCol[i]);
+            renderMonthPlaceholder(year, month0, slideTitles[i], slideGrids[i]);
+          }
+        }
+      }
+
+      // Wire up all .days-toggle buttons (all 3 slides share the same action)
+      document.querySelectorAll(".days-toggle").forEach((btn) => {
+        btn.addEventListener("click", toggleDayMode);
+      });
 
       function initCarousel() {
         for (let i = 0; i < 3; i++) {
@@ -1432,8 +2043,12 @@
       document.getElementById("nav-float-prev").addEventListener("click", () => navigateCarousel(-1));
       document.getElementById("nav-float-next").addEventListener("click", () => navigateCarousel(1));
 
-      // Reload all 3 visible slots (e.g. on location change or manual refresh)
+      // Reload all 3 visible slots (e.g. on location change or manual refresh).
+      // Clears the month cache so the new fetches go all the way to the
+      // network — otherwise we'd just keep showing data for the previous
+      // location after a swap.
       function refreshCarousel() {
+        monthCache.clear();
         for (let i = 0; i < 3; i++) {
           const { year, month0 } = offsetMonthBy(carouselYear, carouselMonth0, slotCol[i]);
           loadSlide(i, year, month0);
@@ -1467,6 +2082,7 @@
         refreshCarousel();
       });
       update();
+      updateToggleLabels();
       initCarousel();
       setInterval(() => {
         update();
@@ -1480,6 +2096,540 @@
           refreshCarousel();
         }
       }, REFRESH_MS);
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Tab navigation
+      // ─────────────────────────────────────────────────────────────────────
+      const TAB_STORAGE_KEY = "raincheck-tab";
+      const TABS = ["raincheck", "sauna", "ferien"];
+      let activeTab = localStorage.getItem(TAB_STORAGE_KEY) || "raincheck";
+      if (!TABS.includes(activeTab)) activeTab = "raincheck";
+
+      let saunaRendered = false;
+      let ferienRendered = false;
+
+      function applyTab(name) {
+        if (!TABS.includes(name)) return;
+        activeTab = name;
+        localStorage.setItem(TAB_STORAGE_KEY, name);
+        for (const btn of document.querySelectorAll("#tabs button")) {
+          btn.classList.toggle("active", btn.dataset.tab === name);
+        }
+        for (const pane of document.querySelectorAll(".tab-pane")) {
+          pane.classList.toggle("hidden", pane.id !== `tab-${name}`);
+        }
+        // Raincheck has floating month-nav arrows — hide them on other tabs
+        for (const b of document.querySelectorAll(".nav-float")) {
+          b.style.display = name === "raincheck" ? "" : "none";
+        }
+        // Ferien gets its own Instagram-style gradient background
+        document.body.classList.toggle("ferien-bg", name === "ferien");
+        if (name === "sauna" && !saunaRendered) {
+          renderSauna();
+          saunaRendered = true;
+        }
+        if (name === "ferien") {
+          if (!ferienRendered) {
+            renderFerien();
+            ferienRendered = true;
+          }
+          // Pull latest from server every time the tab opens
+          refreshFerienFromAPI();
+        }
+      }
+
+      document.getElementById("tabs").addEventListener("click", (e) => {
+        const btn = e.target.closest("button[data-tab]");
+        if (!btn) return;
+        applyTab(btn.dataset.tab);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      // Defer until after the rest of the script runs so all FERIEN_* and
+      // SAUNA_* `const` declarations below have left the temporal dead zone.
+      // Without this, restoring "ferien" or "sauna" as the active tab from
+      // localStorage on first paint would synchronously try to render
+      // before those constants are initialized → ReferenceError.
+      queueMicrotask(() => applyTab(activeTab));
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Sauna pane
+      // ─────────────────────────────────────────────────────────────────────
+      const SAUNA_LOCATIONS = [
+        // Fitnesspark — immer Frauen, heiss rotiert
+        { name: "Glattpark",   url: "https://www.fitnesspark.ch/fitnessparks/zuerich-glattpark/saunalandschaft-exklusiv-fuer-frauen/",   hot: [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
+        { name: "Stadelhofen", url: "https://www.fitnesspark.ch/fitnessparks/zuerich-stadelhofen/saunalandschaft-exklusiv-fuer-frauen/", hot: [0,1,1,0,1,0,1], women: [1,1,1,1,1,1,1] },
+        { name: "Puls 5",      url: "https://www.fitnesspark.ch/fitnessparks/puls-5-zuerich/saunalandschaft-exklusiv-fuer-frauen/",      hot: [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
+        // Activ Fitness — Frauentag
+        { name: "Altstetten",  url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-altstetten/",  hot: [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
+        { name: "Kreuzplatz",  url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-kreuzplatz/",  hot: [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
+        { name: "Stauffacher", url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-stauffacher/", hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Oerlikon",    url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-oerlikon/",    hot: [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
+        { name: "Wiedikon",    url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-wiedikon/",    hot: [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
+        // Activ Fitness — getrennte Kabinen
+        { name: "Central",       url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-central/",       hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Forum",         url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-forum/",         hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Langstrasse",   url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-langstrasse/",   hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Tiefenbrunnen", url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-tiefenbrunnen/", hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: "Wipkingen",     url: "https://www.activfitness.ch/studios/activ-fitness-zuerich-wipkingen/",     hot: [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+      ];
+      const SAUNA_DAY_NAMES = [
+        "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag",
+      ];
+
+      function renderSauna() {
+        const container = document.getElementById("sauna-content");
+        container.innerHTML = "";
+        const todayIso = (new Date().getDay() + 6) % 7; // Mo=0..So=6
+        for (let offset = 0; offset < 7; offset++) {
+          const iso = (todayIso + offset) % 7;
+          const isToday = offset === 0;
+          const studios = SAUNA_LOCATIONS.filter(
+            (l) => l.hot[iso] && l.women[iso],
+          );
+          if (studios.length === 0) continue;
+          const block = document.createElement("div");
+          block.className = "day-block" + (isToday ? " today" : "");
+          const label = document.createElement("div");
+          label.className = "day-label";
+          label.textContent = isToday
+            ? `Heute · ${SAUNA_DAY_NAMES[iso]}`
+            : SAUNA_DAY_NAMES[iso];
+          block.appendChild(label);
+          const list = document.createElement("div");
+          list.className = "studios";
+          for (const loc of studios) {
+            const studio = document.createElement("div");
+            studio.className = "studio";
+            const dot = document.createElement("span");
+            dot.className = "studio-dot";
+            studio.appendChild(dot);
+            const a = document.createElement("a");
+            a.href = loc.url;
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.textContent = loc.name;
+            studio.appendChild(a);
+            list.appendChild(studio);
+          }
+          block.appendChild(list);
+          container.appendChild(block);
+        }
+      }
+
+      // ─────────────────────────────────────────────────────────────────────
+      // Ferien pane — full-year vacation picker, max 25 weekday selections
+      // ─────────────────────────────────────────────────────────────────────
+      const FERIEN_STORAGE_PREFIX = "raincheck-ferien-";
+      const FERIEN_MAX = 25;
+      const FERIEN_MONTH_NAMES = [
+        "Januar", "Februar", "März", "April", "Mai", "Juni",
+        "Juli", "August", "September", "Oktober", "November", "Dezember",
+      ];
+      const FERIEN_WEEKDAY_SHORT = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+
+      let ferienYear = new Date().getFullYear();
+      let ferienSelections = loadFerien(ferienYear);
+
+      // ─── Storage: localStorage as fast cache, API as cross-device source ──
+      function loadFerienLocal(year) {
+        const key = FERIEN_STORAGE_PREFIX + year;
+        try {
+          const raw = localStorage.getItem(key);
+          const arr = raw ? JSON.parse(raw) : [];
+          return new Set(Array.isArray(arr) ? arr : []);
+        } catch {
+          return new Set();
+        }
+      }
+
+      // Sync alias used by the rest of the code at init time
+      function loadFerien(year) {
+        const set = loadFerienLocal(year);
+        console.log(`[ferien] loaded ${set.size} day(s) from cache for ${year}`);
+        return set;
+      }
+
+      function writeFerienLocal(year, selections) {
+        const key = FERIEN_STORAGE_PREFIX + year;
+        try {
+          localStorage.setItem(key, JSON.stringify([...selections]));
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      // Compare two Sets for equal contents
+      function setsEqual(a, b) {
+        if (a.size !== b.size) return false;
+        for (const v of a) if (!b.has(v)) return false;
+        return true;
+      }
+
+      // Async fetch from server. Returns Set or null on failure.
+      async function fetchFerienFromAPI(year) {
+        try {
+          const r = await fetch(`/api/ferien?year=${year}`);
+          if (!r.ok) {
+            console.warn(`[ferien] API GET → ${r.status}`);
+            return null;
+          }
+          const { days } = await r.json();
+          return new Set(Array.isArray(days) ? days : []);
+        } catch (err) {
+          console.warn("[ferien] API GET failed:", err);
+          return null;
+        }
+      }
+
+      // Refresh in-memory + UI from server. Safe to call any time.
+      async function refreshFerienFromAPI() {
+        const yearAtStart = ferienYear;
+        const fromAPI = await fetchFerienFromAPI(yearAtStart);
+        if (fromAPI === null) return;
+        // If user switched years while we waited, ignore stale response
+        if (yearAtStart !== ferienYear) return;
+
+        // First-sync case: server is empty but this device has local data
+        // (e.g. user selected days before the API existed). Push local up.
+        if (fromAPI.size === 0 && ferienSelections.size > 0) {
+          console.log(
+            `[ferien] server empty, pushing local ${ferienSelections.size} day(s) for ${yearAtStart}`,
+          );
+          await saveFerien(yearAtStart, ferienSelections);
+          return;
+        }
+
+        if (setsEqual(fromAPI, ferienSelections)) {
+          console.log(
+            `[ferien] API in sync (${fromAPI.size} day(s) for ${yearAtStart})`,
+          );
+          return;
+        }
+        console.log(
+          `[ferien] API differs (local ${ferienSelections.size} → server ${fromAPI.size}), updating`,
+        );
+        ferienSelections = fromAPI;
+        writeFerienLocal(yearAtStart, fromAPI);
+        if (activeTab === "ferien" && ferienRendered) {
+          renderFerien();
+        }
+      }
+
+      // Persist: write to cache immediately, then sync to API.
+      async function saveFerien(year, selections) {
+        const arr = [...selections];
+        const localOk = writeFerienLocal(year, selections);
+        if (!localOk) {
+          console.warn(`[ferien] localStorage cache write failed for ${year}`);
+        }
+        try {
+          const r = await fetch(`/api/ferien?year=${year}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ days: arr }),
+          });
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          console.log(
+            `[ferien] synced ${arr.length} day(s) to API for ${year}`,
+          );
+          showFerienToast(`✓ ${arr.length}/${FERIEN_MAX} synct`, "ok");
+        } catch (err) {
+          console.warn("[ferien] API POST failed:", err);
+          showFerienToast(
+            "⚠️ Sync offline — nur lokal gespeichert",
+            "warn",
+          );
+        }
+      }
+
+      // Brief floating confirmation/warning at the bottom of the screen
+      let ferienToastTimer = null;
+      function showFerienToast(message, kind) {
+        let toast = document.getElementById("ferien-toast");
+        if (!toast) {
+          toast = document.createElement("div");
+          toast.id = "ferien-toast";
+          toast.style.cssText = `
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            transform: translateX(-50%);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #0f172a;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 200ms ease;
+            z-index: 1000;
+          `;
+          document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.style.background =
+          kind === "warn"
+            ? "rgba(254, 215, 170, 0.95)"
+            : "rgba(255, 255, 255, 0.95)";
+        toast.style.opacity = "1";
+        if (ferienToastTimer) clearTimeout(ferienToastTimer);
+        ferienToastTimer = setTimeout(() => {
+          toast.style.opacity = "0";
+        }, 1400);
+      }
+
+      function isoDateLocal(date) {
+        return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+      }
+
+      function addDaysLocal(date, n) {
+        const r = new Date(date);
+        r.setDate(r.getDate() + n);
+        return r;
+      }
+
+      // Easter Sunday — Anonymous Gregorian algorithm (Meeus/Jones/Butcher)
+      function easterSunday(year) {
+        const a = year % 19;
+        const b = Math.floor(year / 100);
+        const c = year % 100;
+        const d = Math.floor(b / 4);
+        const e = b % 4;
+        const f = Math.floor((b + 8) / 25);
+        const g = Math.floor((b - f + 1) / 3);
+        const h = (19 * a + b - d - g + 15) % 30;
+        const i = Math.floor(c / 4);
+        const k = c % 4;
+        const L = (32 + 2 * e + 2 * i - h - k) % 7;
+        const m = Math.floor((a + 11 * h + 22 * L) / 451);
+        const month = Math.floor((h + L - 7 * m + 114) / 31);
+        const day = ((h + L - 7 * m + 114) % 31) + 1;
+        return new Date(year, month - 1, day);
+      }
+
+      // Kanton Zürich — gesetzliche Feiertage
+      function zhHolidays(year) {
+        const e = easterSunday(year);
+        return {
+          [isoDateLocal(new Date(year, 0, 1))]: "Neujahr",
+          [isoDateLocal(new Date(year, 0, 2))]: "Berchtoldstag",
+          [isoDateLocal(addDaysLocal(e, -2))]: "Karfreitag",
+          [isoDateLocal(addDaysLocal(e, 1))]: "Ostermontag",
+          [isoDateLocal(new Date(year, 4, 1))]: "Tag der Arbeit",
+          [isoDateLocal(addDaysLocal(e, 39))]: "Auffahrt",
+          [isoDateLocal(addDaysLocal(e, 50))]: "Pfingstmontag",
+          [isoDateLocal(new Date(year, 7, 1))]: "Bundesfeier",
+          [isoDateLocal(new Date(year, 11, 25))]: "Weihnachten",
+          [isoDateLocal(new Date(year, 11, 26))]: "Stephanstag",
+        };
+      }
+
+      function renderFerien() {
+        try {
+          renderFerienInner();
+        } catch (err) {
+          const container = document.getElementById("ferien-year");
+          if (container) {
+            container.innerHTML = `<div style="padding:24px;color:#0f172a;background:rgba(255,255,255,0.7);border-radius:14px;border:1px solid rgba(15,23,42,0.2);font-family:monospace;font-size:12px;white-space:pre-wrap;word-break:break-word;">⚠️ renderFerien crash:\n\n${err.message}\n\n${err.stack || ""}</div>`;
+          }
+          console.error("[ferien] render crash:", err);
+        }
+      }
+
+      function renderFerienInner() {
+        const container = document.getElementById("ferien-year");
+        container.innerHTML = "";
+        document.getElementById("ferien-year-label").textContent =
+          String(ferienYear);
+
+        const holidays = zhHolidays(ferienYear);
+        const today = new Date();
+        const todayY = today.getFullYear();
+        const todayM = today.getMonth();
+        const todayD = today.getDate();
+        console.log(
+          `[ferien] rendering ${ferienYear}, today=${todayY}-${todayM + 1}-${todayD}`,
+        );
+
+        let renderedMonths = 0;
+
+        for (let m = 0; m < 12; m++) {
+          // Skip months that are entirely in the past
+          if (
+            ferienYear < todayY ||
+            (ferienYear === todayY && m < todayM)
+          ) {
+            continue;
+          }
+
+          const isCurrentMonth =
+            ferienYear === todayY && m === todayM;
+
+          const monthDiv = document.createElement("div");
+          monthDiv.className = "ferien-month";
+
+          const title = document.createElement("div");
+          title.className = "ferien-month-title";
+          title.textContent = `${FERIEN_MONTH_NAMES[m]} ${ferienYear}`;
+          monthDiv.appendChild(title);
+
+          const grid = document.createElement("div");
+          grid.className = "ferien-grid";
+
+          for (const w of FERIEN_WEEKDAY_SHORT) {
+            const h = document.createElement("div");
+            h.className = "weekday";
+            h.textContent = w;
+            grid.appendChild(h);
+          }
+
+          const firstWd = isoWeekday(new Date(ferienYear, m, 1));
+          for (let i = 0; i < firstWd; i++) {
+            const empty = document.createElement("span");
+            empty.className = "ferien-cell empty";
+            grid.appendChild(empty);
+          }
+
+          const total = daysInMonth(ferienYear, m);
+          for (let d = 1; d <= total; d++) {
+            const date = new Date(ferienYear, m, d);
+            const dStr = isoDateLocal(date);
+            const wd = isoWeekday(date);
+            const isWeekend = wd >= 5;
+            const holidayName = holidays[dStr];
+            const isHoliday = !!holidayName;
+            const isPast = isCurrentMonth && d < todayD;
+            const isSelected = ferienSelections.has(dStr);
+            const isToday = isCurrentMonth && d === todayD;
+
+            const cell = document.createElement("button");
+            cell.type = "button";
+            cell.className = "ferien-cell";
+            if (isPast) cell.classList.add("past");
+            else if (isHoliday) cell.classList.add("holiday");
+            else if (isWeekend) cell.classList.add("disabled");
+            if (isSelected && !isPast) cell.classList.add("selected");
+            if (isToday) cell.classList.add("today");
+            cell.textContent = String(d);
+            cell.dataset.date = dStr;
+
+            if (isPast) cell.title = "Vergangen";
+            else if (isHoliday) cell.title = holidayName;
+            else if (isWeekend) cell.title = wd === 5 ? "Samstag" : "Sonntag";
+
+            grid.appendChild(cell);
+          }
+
+          monthDiv.appendChild(grid);
+          container.appendChild(monthDiv);
+          renderedMonths += 1;
+        }
+        console.log(`[ferien] rendered ${renderedMonths} month(s)`);
+
+        // If nothing rendered (e.g., user navigated to a past year), show hint
+        if (renderedMonths === 0) {
+          const empty = document.createElement("div");
+          empty.className = "ferien-month";
+          empty.style.textAlign = "center";
+          empty.style.padding = "32px 16px";
+          empty.style.color = "var(--muted)";
+          empty.innerHTML =
+            `Keine planbaren Tage in ${ferienYear}.<br>` +
+            `<button type="button" id="ferien-jump-today" style="` +
+            `appearance:none;background:rgba(255,255,255,0.5);` +
+            `border:1px solid var(--border);border-radius:999px;` +
+            `padding:6px 14px;font:inherit;font-size:13px;font-weight:600;` +
+            `color:var(--text);cursor:pointer;margin-top:12px;">` +
+            `→ Zu ${todayY} springen</button>`;
+          container.appendChild(empty);
+          document
+            .getElementById("ferien-jump-today")
+            .addEventListener("click", () => {
+              ferienYear = todayY;
+              ferienSelections = loadFerien(ferienYear);
+              renderFerien();
+            });
+        }
+
+        updateFerienCounter();
+      }
+
+      function updateFerienCounter() {
+        document.getElementById("ferien-count").textContent = String(
+          ferienSelections.size,
+        );
+        document
+          .getElementById("ferien-counter")
+          .classList.toggle("full", ferienSelections.size >= FERIEN_MAX);
+      }
+
+      document
+        .getElementById("ferien-year")
+        .addEventListener("click", (e) => {
+          const cell = e.target.closest(".ferien-cell");
+          if (
+            !cell ||
+            cell.classList.contains("empty") ||
+            cell.classList.contains("disabled") ||
+            cell.classList.contains("holiday") ||
+            cell.classList.contains("past")
+          ) {
+            return;
+          }
+          const dStr = cell.dataset.date;
+          if (!dStr) return;
+
+          if (ferienSelections.has(dStr)) {
+            ferienSelections.delete(dStr);
+            cell.classList.remove("selected");
+          } else {
+            if (ferienSelections.size >= FERIEN_MAX) {
+              cell.classList.remove("shake");
+              void cell.offsetWidth; // restart animation
+              cell.classList.add("shake");
+              return;
+            }
+            ferienSelections.add(dStr);
+            cell.classList.add("selected");
+          }
+
+          saveFerien(ferienYear, ferienSelections);
+          updateFerienCounter();
+        });
+
+      document
+        .getElementById("ferien-year-prev")
+        .addEventListener("click", () => {
+          ferienYear -= 1;
+          ferienSelections = loadFerien(ferienYear);
+          renderFerien();
+          refreshFerienFromAPI();
+        });
+      document
+        .getElementById("ferien-year-next")
+        .addEventListener("click", () => {
+          ferienYear += 1;
+          ferienSelections = loadFerien(ferienYear);
+          renderFerien();
+          refreshFerienFromAPI();
+        });
+
+      // Refresh from server when the tab/window comes back into focus
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden && activeTab === "ferien") {
+          refreshFerienFromAPI();
+        }
+      });
+
+      // Kick off a server sync shortly after init so the first paint
+      // (from localStorage) gets corrected if another device added/removed days.
+      setTimeout(() => {
+        refreshFerienFromAPI();
+      }, 300);
     </script>
   </body>
 </html>
