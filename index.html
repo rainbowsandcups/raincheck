@@ -61,10 +61,11 @@
         );
       }
 
-      /* Ferien tab — Instagram-style gradient, overrides go/stay.
+      /* Ferien & Sauna tabs — Instagram-style gradient, overrides go/stay.
          Fixed to the viewport so the full gradient shows regardless of
-         how tall the year scroll gets. */
-      body.ferien-bg {
+         how tall the scroll gets. */
+      body.ferien-bg,
+      body.sauna-bg {
         background: radial-gradient(
           circle at 30% 107%,
           #fdf497 0%,
@@ -2148,8 +2149,9 @@
         for (const b of document.querySelectorAll(".nav-float")) {
           b.style.display = name === "raincheck" ? "" : "none";
         }
-        // Ferien gets its own Instagram-style gradient background
+        // Ferien & Sauna get the Instagram-style gradient background
         document.body.classList.toggle("ferien-bg", name === "ferien");
+        document.body.classList.toggle("sauna-bg", name === "sauna");
         if (name === "sauna" && !saunaRendered) {
           renderSauna();
           saunaRendered = true;
