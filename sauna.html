@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Sauna — Raincheck</title>
+    <style>
+      :root {
+        --text:     #2e1f1f;
+        --muted:    rgba(46,31,31,0.45);
+        --card:     rgba(255,255,255,0.45);
+        --border:   rgba(255,255,255,0.65);
+        --dot:      #8b5cf6;
+        --today-bg: rgba(255,255,255,0.55);
+      }
+
+      * { box-sizing: border-box; margin: 0; }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        background: radial-gradient(ellipse 160% 120% at 30% 0%,
+          #fce8e0 0%, #f5cfc4 40%, #e8b8b0 75%, #d9a89e 100%);
+        min-height: 100vh;
+        color: var(--text);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      header {
+        padding: clamp(20px,3.5vh,40px) clamp(16px,4vw,40px) 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .back {
+        color: var(--muted);
+        text-decoration: none;
+        font-size: 13px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        transition: color 150ms;
+      }
+      .back:hover { color: var(--text); }
+
+      h1 {
+        font-size: clamp(28px,5vw,48px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+
+      main {
+        padding: clamp(20px,3.5vh,36px) clamp(16px,4vw,40px) 60px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 480px;
+      }
+
+      .day-block {
+        border-radius: 14px;
+        border: 1px solid var(--border);
+        background: var(--card);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 14px 16px;
+      }
+
+      .day-block.today {
+        background: var(--today-bg);
+        border-color: rgba(255,255,255,0.85);
+      }
+
+      .day-label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .day-block.today .day-label {
+        color: var(--dot);
+      }
+
+      .studios {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      .studio {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .studio-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--dot);
+        flex-shrink: 0;
+        box-shadow: 0 0 5px rgba(139,92,246,0.45);
+      }
+
+      .studio a {
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text);
+        text-decoration: none;
+        transition: color 150ms;
+      }
+      .studio a:hover { color: var(--dot); }
+
+      .brand-group { margin-top: 14px; }
+      .brand-group:first-of-type { margin-top: 0; }
+
+      .brand-label {
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        opacity: 0.8;
+        margin-bottom: 7px;
+      }
+
+      .studio-dist {
+        margin-left: auto;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+
+    <header>
+      <a class="back" href="index.html">← Raincheck</a>
+      <h1>Sauna</h1>
+    </header>
+
+    <main id="main"></main>
+
+    <script>
+      const todayIso = (new Date().getDay() + 6) % 7; // Mo=0…So=6
+      const DAY_NAMES = ['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+
+      // hot[iso] = 1 heisse Sauna, women[iso] = 1 Frauen (exklusiv oder getrennt)
+      const LOCATIONS = [
+        // Fitnesspark — immer Frauen, heiss rotiert
+        { name: 'Glattpark',    brand: 'Fitnesspark', lat: 47.4267, lng: 8.5640,
+          url: 'https://www.fitnesspark.ch/fitnessparks/zuerich-glattpark/saunalandschaft-exklusiv-fuer-frauen/',
+          hot:   [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
+        { name: 'Stadelhofen',  brand: 'Fitnesspark', lat: 47.3668, lng: 8.5475,
+          url: 'https://www.fitnesspark.ch/fitnessparks/zuerich-stadelhofen/saunalandschaft-exklusiv-fuer-frauen/',
+          hot:   [0,1,1,0,1,0,1], women: [1,1,1,1,1,1,1] },
+        { name: 'Puls 5',       brand: 'Fitnesspark', lat: 47.3893, lng: 8.5175,
+          url: 'https://www.fitnesspark.ch/fitnessparks/puls-5-zuerich/saunalandschaft-exklusiv-fuer-frauen/',
+          hot:   [1,0,0,1,0,1,0], women: [1,1,1,1,1,1,1] },
+
+        // Activ Fitness — Frauentag (1 Tag/Woche exklusiv)
+        { name: 'Altstetten',   brand: 'Active Fitness', lat: 47.3905, lng: 8.4885,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-altstetten/',
+          hot:   [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
+        { name: 'Kreuzplatz',   brand: 'Active Fitness', lat: 47.3642, lng: 8.5527,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-kreuzplatz/',
+          hot:   [1,1,1,1,1,1,1], women: [0,1,0,0,0,0,0] },
+        { name: 'Stauffacher',  brand: 'Active Fitness', lat: 47.3739, lng: 8.5288,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-stauffacher/',
+          hot:   [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: 'Oerlikon',     brand: 'Active Fitness', lat: 47.4108, lng: 8.5470,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-oerlikon/',
+          hot:   [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
+        { name: 'Wiedikon',     brand: 'Active Fitness', lat: 47.3690, lng: 8.5145,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-wiedikon/',
+          hot:   [1,1,1,1,1,1,1], women: [0,0,0,1,0,0,0] },
+
+        // Activ Fitness — getrennte Kabinen, immer heiss, immer Frauen
+        { name: 'Central',        brand: 'Active Fitness', lat: 47.3768, lng: 8.5430,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-central/',
+          hot:   [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: 'Forum',          brand: 'Active Fitness', lat: 47.3770, lng: 8.5340,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-forum/',
+          hot:   [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: 'Langstrasse',    brand: 'Active Fitness', lat: 47.3782, lng: 8.5305,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-langstrasse/',
+          hot:   [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: 'Tiefenbrunnen',  brand: 'Active Fitness', lat: 47.3545, lng: 8.5565,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-tiefenbrunnen/',
+          hot:   [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+        { name: 'Wipkingen',      brand: 'Active Fitness', lat: 47.3950, lng: 8.5260,
+          url: 'https://www.activfitness.ch/studios/activ-fitness-zuerich-wipkingen/',
+          hot:   [1,1,1,1,1,1,1], women: [1,1,1,1,1,1,1] },
+      ];
+
+      const BRANDS = ['Fitnesspark', 'Active Fitness'];
+
+      const main = document.getElementById('main');
+
+      let userPos = null; // { lat, lng } sobald GPS verfügbar
+
+      // Distanz Luftlinie in km (Haversine)
+      function distKm(a, b) {
+        const R = 6371, toRad = d => d * Math.PI / 180;
+        const dLat = toRad(b.lat - a.lat), dLng = toRad(b.lng - a.lng);
+        const s = Math.sin(dLat / 2) ** 2 +
+          Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(dLng / 2) ** 2;
+        return R * 2 * Math.asin(Math.sqrt(s));
+      }
+
+      function render() {
+        main.innerHTML = '';
+
+        for (let offset = 0; offset < 7; offset++) {
+          const iso = (todayIso + offset) % 7;
+          const isToday = offset === 0;
+
+          const open = LOCATIONS.filter(l => l.hot[iso] && l.women[iso]);
+          if (open.length === 0) continue;
+
+          const block = document.createElement('div');
+          block.className = 'day-block' + (isToday ? ' today' : '');
+
+          const label = document.createElement('div');
+          label.className = 'day-label';
+          label.textContent = isToday ? `Heute · ${DAY_NAMES[iso]}` : DAY_NAMES[iso];
+          block.appendChild(label);
+
+          BRANDS.forEach(brand => {
+            const studios = open.filter(l => l.brand === brand);
+            if (studios.length === 0) return;
+
+            if (userPos) {
+              studios
+                .forEach(l => l._dist = distKm(userPos, l));
+              studios.sort((a, b) => a._dist - b._dist);
+            }
+
+            const group = document.createElement('div');
+            group.className = 'brand-group';
+
+            const brandLabel = document.createElement('div');
+            brandLabel.className = 'brand-label';
+            brandLabel.textContent = brand;
+            group.appendChild(brandLabel);
+
+            const list = document.createElement('div');
+            list.className = 'studios';
+            studios.forEach(loc => {
+              const dist = userPos
+                ? `<span class="studio-dist">${loc._dist.toFixed(1)} km</span>` : '';
+              list.insertAdjacentHTML('beforeend', `
+                <div class="studio">
+                  <span class="studio-dot"></span>
+                  <a href="${loc.url}" target="_blank" rel="noopener">${loc.name}</a>
+                  ${dist}
+                </div>`);
+            });
+            group.appendChild(list);
+            block.appendChild(group);
+          });
+
+          main.appendChild(block);
+        }
+      }
+
+      render();
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            userPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+            render();
+          },
+          () => {}, // Freigabe verweigert → bisherige Reihenfolge bleibt
+          { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+        );
+      }
+    </script>
+
+  </body>
+</html>
